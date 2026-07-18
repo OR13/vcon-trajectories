@@ -10,13 +10,11 @@
     },
     {
       "type": "bot",
-      "name": "Qwythos-9B-Claude-Mythos-5-1M",
-      "org": "empero-ai"
+      "name": "Qwythos-9B-Claude-Mythos-5-1M"
     },
     {
       "type": "bot",
-      "name": "web_search",
-      "org": "empero-ai"
+      "name": "web_search"
     }
   ],
   "dialog": [

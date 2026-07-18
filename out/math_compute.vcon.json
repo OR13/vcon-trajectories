@@ -10,13 +10,11 @@
     },
     {
       "type": "bot",
-      "name": "Qwythos-9B-Claude-Mythos-5-1M",
-      "org": "empero-ai"
+      "name": "Qwythos-9B-Claude-Mythos-5-1M"
     },
     {
       "type": "bot",
-      "name": "python_executor",
-      "org": "empero-ai"
+      "name": "python_executor"
     }
   ],
   "dialog": [

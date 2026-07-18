@@ -46,12 +46,12 @@ def trajectory_to_vcon(
 ) -> Dict[str, Any]:
     parties: List[Dict[str, Any]] = [
         {"type": "person", "name": "user"},
-        {"type": "bot", "name": traj.model, "org": "empero-ai"},
+        {"type": "bot", "name": traj.model},
     ]
     tool_party: Dict[str, int] = {}
     for tool in traj.tools_used:
         tool_party[tool] = len(parties)
-        parties.append({"type": "bot", "name": tool, "org": "empero-ai"})
+        parties.append({"type": "bot", "name": tool})
 
     dialog: List[Dict[str, Any]] = []
     analysis: List[Dict[str, Any]] = []

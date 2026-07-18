@@ -37,11 +37,41 @@ Equivalent CLI: `hf download empero-ai/Qwythos-9B-Claude-Mythos-5-1M evals/tool_
 The weights (`model.safetensors`, ~9B params) are large; you do **not** need them —
 only the `evals/*.md` files.
 
-## About the other "mythos" dataset
+## A separate, structured dataset: `VINAY-UMRETHE/Mythos-Agent`
 
-`VINAY-UMRETHE/Mythos-Agent` is a genuine HF *dataset* of agent trajectories
-(65 rows, parquet, Anthropic messages/tool-call shape), but it is **gated**
-(HTTP 401 without an accepted access request + `HF_TOKEN`). If you want to use it
-instead, accept the gate on huggingface.co, `export HF_TOKEN=...`, and it can be
-loaded with `datasets.load_dataset("VINAY-UMRETHE/Mythos-Agent")`. This project
-uses the public Qwythos eval logs so the demo is fully reproducible with no auth.
+> **This is a different, unrelated artifact.** It is *not* the training data of
+> the Qwythos model above (those traces are proprietary). It is an independent
+> Hugging Face **dataset** that happens to share the "mythos" name. Do not
+> conflate the two.
+
+- **Dataset:** [`VINAY-UMRETHE/Mythos-Agent`](https://huggingface.co/datasets/VINAY-UMRETHE/Mythos-Agent)
+- **License:** CC-BY-4.0 · **Size:** 65 rows, one `train` split, single Parquet
+  file (`data/train-00000-of-00001.parquet`)
+- **Shape:** structured agent trajectories — top-level `id`, `schema_version`,
+  `model_target`, `created_at`, `metadata`, `system`, `tools[]`, and
+  `messages[]` (`role` + `content`), following the Anthropic Messages
+  convention (`content` blocks of `text` / `tool_use` / `tool_result`).
+- **Access:** the repo is **gated** (approval required). A valid `HF_TOKEN`
+  authenticates you, but you must *also* be on the authorized list, or downloads
+  fail with `GatedRepoError` (403 "not in the authorized list"). Request access
+  on the dataset page while logged in, wait for approval, then:
+
+```bash
+export HF_TOKEN=hf_...   # a token for an account that has been granted access
+python - <<'PY'
+from huggingface_hub import hf_hub_download
+import pyarrow.parquet as pq
+p = hf_hub_download("VINAY-UMRETHE/Mythos-Agent",
+                    "data/train-00000-of-00001.parquet",
+                    repo_type="dataset", token=True)
+print(pq.read_table(p).num_rows, "rows")
+PY
+```
+
+**Status in this repo:** not yet consumed — access to the gate was still pending
+at last check. A structured parser for this shape can be added under
+`src/vcon_trajectories/` once access is granted; the existing `convert.py`
+(Trajectory → vCon) is source-agnostic and can be reused directly.
+
+The primary, reproducible demo uses the **public** Qwythos eval logs above so it
+runs with no auth.

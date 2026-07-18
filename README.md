@@ -37,8 +37,10 @@ real trajectories and are what we convert:
 
 They are already vendored under [`data/qwythos_evals/`](data/qwythos_evals/), and
 [`docs/data-source.md`](docs/data-source.md) documents exactly how to (re)download
-them (no auth needed) and how to instead use the gated `VINAY-UMRETHE/Mythos-Agent`
-HF *dataset* if you prefer.
+them (no auth needed). It also covers a **separate, unrelated** structured HF
+dataset, the gated [`VINAY-UMRETHE/Mythos-Agent`](https://huggingface.co/datasets/VINAY-UMRETHE/Mythos-Agent)
+(CC-BY-4.0) — note that is *not* the Qwythos model's training data, just another
+"mythos"-named artifact.
 
 ## Validation
 
