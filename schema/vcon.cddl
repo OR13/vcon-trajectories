@@ -1,0 +1,230 @@
+vcon = {
+    ? vcon_version_type,                                         ; SPEC-AE (r9): RELAXED from REQUIRED to OPTIONAL per §4.1.1 DEPRECATED flag + 100% NEW CORPUS omission
+    ? uuid_type,                                                 ; §4.1.2 optional; 4/681 OLD CORPUS omit
+    ? subject:     tstr,                                         ; §4.1.6
+    created_at:    date_type,                                    ; §4.1.5 REQUIRED
+    ? updated_at:  date_type,                                    ; §4.1.7
+    ? redacted:    redacted_reference_type / empty_object_type,  ; §4.1.8.1; empty {} accepted (99.9% corpus practice)
+    ? amended:     amended_reference_type  / empty_object_type,  ; §4.1.9.1; empty {} accepted
+    ? group:       [* { uuid: uuid_string }],                    ; §6.3.2 "reserved for future"; corpus 2995/2995 are uuid-only
+    parties:       [* party_object_type],                        ; §4.1.10 REQUIRED
+    ? dialog:      [* dialog_object_type],
+    ? attachments: [* attachment_object_type],
+    ? analysis:    [* analysis_object_type],
+    ? extensions:  [* tstr],                                     ; §4.1.3
+    ? critical:    [* tstr],                                     ; §4.1.4
+    ? meta:        vcon_meta_type,                               ; corpus-only; not in spec §4.1
+    $$vcon-ext                                                   ; RFC 8610 §3.9 ext socket; no trailing open_ext at vcon top-level
+}
+
+;; Reference shapes
+
+redacted_reference_type = {
+    ? uuid:         uuid_string,                                 ; §4.1.8 SHOULD; absence = "less-redacted version not available"
+    type:           tstr,                                        ; §4.1.8.1 REQUIRED (kind of redaction)
+    ? url:          tstr,                                        ; §4.1.8.1 OPTIONAL
+    ? content_hash: content_hash_value                           ; §4.1.8.1 MUST if url present (not CDDL-enforced)
+}
+
+amended_reference_type = {
+    ? uuid:         uuid_string,                                 ; §4.1.9.1 all OPTIONAL
+    ? url:          tstr,
+    ? content_hash: content_hash_value                           ; §4.1.9.1 MUST if url present (not CDDL-enforced)
+}
+
+;; Parties
+
+party_object_type = {
+    ? tel:          ~uri,                                        ; §4.2.1 tel URL; `~uri` = unwrap-of-prelude-uri, doc-strength URI typing
+    ? sip:          ~uri,                                        ; §4.2.2 SIP URI (RFC 3261); `~uri`
+    ? stir:         tstr,                                        ; §4.2.3 PASSporT (RFC 8225); JWS Compact, NOT a URI
+    ? did:          ~uri,                                        ; §4.2.6 W3C DID URI (did:METHOD:ID); `~uri`
+    ? mailto:       ~uri,                                        ; §4.2.4 mailto URL; `~uri`
+    ? name:         tstr,                                        ; §4.2.5
+    ? validation:   tstr,                                        ; §4.2.7
+    ? gmlpos:       tstr,                                        ; §4.2.8
+    ? civicaddress: civicaddress_type,                           ; §4.2.9
+    ? uuid_type,                                                 ; §4.2.10
+    ? id:           tstr,                                        ; corpus convention; 1288/1314 parties have it
+    ? meta:         party_meta_type,                             ; corpus-only; not in spec §4.2
+    $$party-ext,
+    open_ext
+}
+
+;; Dialog
+
+dialog_object_type = {
+    type:           tstr,                                        ; §4.3.1 spec enum (recording|text|transfer|incomplete); relaxed because corpus also emits video/email
+    ? start:        date_type,                                   ; §4.3.2 optional in corpus practice
+    ? duration:     number .ge 0,                                ; §4.3.3 non-negative
+    ? parties:      dialog_parties_type,                         ; §4.3.4 optional in corpus practice
+    ? party_history: [* party_event_type],                       ; §4.3.11
+    ? originator:   party_index_type,                            ; §4.3.5
+    ? mimetype:     tstr,                                        ; §7.3 DEPRECATED -> mediatype; kept for back-compat (3157 corpus uses)
+    ? mediatype:    tstr,                                        ; §4.3.6 (RFC 6838 term)
+    ? filename:     tstr,                                        ; §4.3.7
+    ? encoding:     "none" / "json" / "base64url",               ; §2.3.2 spec enum
+    ? body:         json-value,                                  ; §4.3.8 inline content (json-value includes tstr)
+    ? url:          tstr,                                        ; §4.3.8 url-referenced content
+    ? alg:          tstr,                                        ; §7.3 DEPRECATED -> content_hash; kept for back-compat (49 corpus uses)
+    ? signature:    tstr,                                        ; §7.3 DEPRECATED -> content_hash
+    ? content_hash: content_hash_value,                          ; §4.3.8 SRI; scalar OR non-empty array
+    ? size:         uint,                                        ; corpus-only; not in spec §4.3
+    ? message_id:   tstr,                                        ; §4.3.14
+    ? session_id:   session_id_value,                            ; §4.3.10 (RFC 7989-style)
+    ? application:     tstr,                                     ; §4.3.13
+    ? transferee:      party_index_type,                         ; §4.3.12 transfer role
+    ? transferor:      party_index_type,                         ; §4.3.12 transfer role
+    ? transfer_target: party_index_or_list_type,                 ; §4.3.12 uint or [* uint]
+    ? original:        dialog_index_or_list_type,                ; §4.3.12 uint or [* uint]
+    ? consultation:    dialog_index_or_list_type,                ; §4.3.12 uint or [* uint]
+    ? target_dialog:   dialog_index_or_list_type,                ; §4.3.12 uint or [* uint]
+    ? disposition:  "no-answer" / "congestion" / "failed" / "busy" / "hung-up" / "voicemail-no-message",  ; §4.3.9 enum (REQUIRED if type=incomplete; not CDDL-enforced)
+    ? meta:         dialog_meta_type,                            ; corpus-only; not in spec §4.3
+    $$dialog-ext,
+    open_ext
+}
+
+;; Attachments
+
+attachment_object_type = {
+    ? type:         tstr,                                        ; corpus-only; NOT in spec §4.4 (82.7% corpus emit; producers SHOULD use purpose)
+    ? purpose:      tstr,                                        ; §4.4.1 spec-canonical
+    ? start:        date_type,                                   ; §4.4.2
+    ? party:        party_index_type,                            ; §4.4.3
+    ? dialog:       dialog_index_type,                           ; §4.4.4
+    ? mimetype:     tstr,                                        ; §7.3 DEPRECATED -> mediatype
+    ? mediatype:    tstr,                                        ; §4.4.5
+    ? filename:     tstr,                                        ; §4.4.6
+    ? encoding:     "none" / "json" / "base64url",               ; §2.3.2
+    ? body:         json-value,                                  ; §4.4.7 inline
+    ? url:          tstr,                                        ; §4.4.7 url-ref
+    ? alg:          tstr,                                        ; §7.3 DEPRECATED -> content_hash
+    ? signature:    tstr,                                        ; §7.3 DEPRECATED -> content_hash
+    ? content_hash: content_hash_value,                          ; §4.4.7
+    ? size:         uint,                                        ; corpus-only; not in spec §4.4
+    ? meta:         attachment_meta_type,                        ; corpus-only; not in spec §4.4
+    $$attachment-ext,
+    open_ext
+}
+
+;; Analysis
+
+analysis_object_type = {
+    type:           tstr,                                        ; §4.5.1
+    ? dialog:       dialog_index_or_list_type,                   ; §4.5.2 uint or [* uint]
+    vendor:         tstr,                                        ; §4.5.5 REQUIRED
+    ? product:      tstr,                                        ; §4.5.6
+    ? schema:       tstr,                                        ; §4.5.7
+    ? mimetype:     tstr,                                        ; §7.3 DEPRECATED -> mediatype
+    ? mediatype:    tstr,                                        ; §4.5.3
+    ? filename:     tstr,                                        ; §4.5.4
+    ? encoding:     "none" / "json" / "base64url",               ; §2.3.2
+    ? body:         json-value,                                  ; §4.5.8 inline
+    ? url:          tstr,                                        ; §4.5.8 url-ref
+    ? alg:          tstr,                                        ; §7.3 DEPRECATED -> content_hash
+    ? signature:    tstr,                                        ; §7.3 DEPRECATED -> content_hash
+    ? content_hash: content_hash_value,                          ; §4.5.8
+    ? meta:         analysis_meta_type,                          ; corpus-only; not in spec §4.5
+    $$analysis-ext,
+    open_ext
+}
+
+;; Party events
+
+party_event_type = {
+    party: party_index_type,                                     ; §4.3.11.1
+    event: "join" / "drop" / "hold" / "unhold" / "mute" / "unmute" / "keydown" / "keyup",  ; §4.3.11.1 spec enum
+    time:  date_type,
+    ? button: tstr,                                              ; §4.3.11.1 REQUIRED iff event=keydown/keyup (not CDDL-enforced)
+    $$party-event-ext,
+    open_ext
+}
+
+;; Civic address  (PIDF-LO / RFC 5139)
+
+civicaddress_type = {
+    ? country: tstr,
+    ? a1: tstr, ? a2: tstr, ? a3: tstr,
+    ? a4: tstr, ? a5: tstr, ? a6: tstr,
+    ? prd: tstr, ? pod: tstr, ? sts: tstr,
+    ? hno: tstr, ? hns: tstr, ? lmk: tstr,
+    ? loc: tstr, ? flr: tstr, ? nam: tstr,
+    ? pc:  tstr,
+    $$civicaddress-ext,
+    open_ext
+}
+
+;; Atomic types
+
+date_type   = tstr .regexp re-rfc3339                            ; RFC 3339 §5.6 SHAPE only (no range validation)
+uuid_string = tstr .regexp re-uuid                               ; RFC 4122 §3 / RFC 9562 §4 canonical hyphenated hex
+
+dialog_index_type = uint
+party_index_type  = uint
+
+one-or-array<T> = T / [* T]                                      ; useful-CDDL scalar-or-array; `[* T]` (singleton allowed) to keep 37 corpus `analysis.dialog: [singleIdx]` instances
+
+dialog_index_or_list_type = one-or-array<dialog_index_type>
+dialog_parties_type       = party_index_type / [* party_index_or_list_type]
+party_index_or_list_type  = one-or-array<party_index_type>
+
+empty_object_type = {}
+
+meta_type            = { * tstr => json-value }                  ; JSON-binding-safe; not the broader CDDL `any`
+vcon_meta_type       = meta_type
+party_meta_type      = meta_type
+dialog_meta_type     = meta_type
+attachment_meta_type = meta_type
+analysis_meta_type   = meta_type
+
+content_hash_type  = tstr .regexp re-sri                         ; W3C SRI-like: <hash-name>-<base64url>
+content_hash_value = content_hash_type / [+ content_hash_type]   ; §2.2 ContentHash | ContentHash[]; non-empty array form
+
+session_id_object  = { ? local: tstr, ? remote: tstr }           ; §4.3.10 SessionId; both `?` per §4.3.10 prose
+session_id_value   = session_id_object
+                   / [* (session_id_object / [* session_id_object])]  ; §4.3.10 cardinality (2-arm minimal factoring of the spec's 3-arm signature)
+
+uuid_type = ( uuid: uuid_string )                                ; group rule (reused at vcon top + party)
+
+vcon_version_type = ( "vcon": "0.0.1" / "0.0.2" / "0.4.0" )      ; §4.1.1 value enum; quantifier on use-site (see SPEC-AE r9 header)
+
+;; Extension sockets  (RFC 8610 §3.9 empty group defaults)
+
+$$vcon-ext         //= ()
+$$party-ext        //= ()
+$$dialog-ext       //= ()
+$$attachment-ext   //= ()
+$$analysis-ext     //= ()
+$$party-event-ext  //= ()
+$$civicaddress-ext //= ()
+
+;; Open-extension tail
+
+open_ext = ( * tstr => json-value )                              ; trailing wildcard; vcon top-level intentionally lacks this (closed surface)
+
+;; JSON data model  (RFC 8259 §3, recursive)
+
+json-value = bool
+           / nil
+           / number
+           / tstr
+           / [* json-value]
+           / { * tstr => json-value }
+
+;; Regex fragments (composed via .cat per RFC 9165 §2.2)
+
+re-date-part   = "[0-9]{4}-[0-9]{2}-[0-9]{2}"                    ; RFC 3339 §5.6 full-date
+re-time-part   = "[0-9]{2}:[0-9]{2}:[0-9]{2}"                    ; RFC 3339 §5.6 partial-time
+re-frac-secs   = "(\\.[0-9]+)?"                                  ; RFC 3339 §5.6 time-secfrac
+re-time-offset = "([Zz]|[+-][0-9]{2}:[0-9]{2})?"                 ; trailing `?` accepts no-TZ values (RFC 3339 violation; 213 fake-vcons emit dates without offset)
+
+re-rfc3339 = ((((re-date-part .cat "[Tt]") .cat re-time-part) .cat re-frac-secs) .cat re-time-offset)  ; nested parens required by cddl gem 0.12 parser
+
+re-hex8  = "[0-9a-fA-F]{8}"                                      ; RFC 4122 §3 / RFC 9562 §4 hex groups
+re-hex4  = "[0-9a-fA-F]{4}"
+re-hex12 = "[0-9a-fA-F]{12}"
+
+re-uuid = ((((((((re-hex8 .cat "-") .cat re-hex4) .cat "-") .cat re-hex4) .cat "-") .cat re-hex4) .cat "-") .cat re-hex12)  ; nested parens; same gem-parser reason
+
+re-sri = "(sha256|sha384|sha512|shake128|shake256)-[A-Za-z0-9_-]+"  ; IANA COSE-Algorithms hash family; sha-1 omitted (deprecated)

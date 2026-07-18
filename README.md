@@ -70,6 +70,37 @@ implementation, [`python-vcon`](https://github.com/py-vcon/py-vcon). Caveat:
 no JSON Schema of its own — so it can only parse a version-downgraded *copy*. The
 authoritative check here is the JSON Schema.
 
+## CDDL validation report
+
+Every generated vCon is *also* validated against a CDDL grammar
+([`schema/vcon.cddl`](schema/vcon.cddl)) — a corpus-informed
+[RFC 8610](https://www.rfc-editor.org/rfc/rfc8610) definition of the vCon
+container that accepts the spec's `vcon` values `0.0.1 / 0.0.2 / 0.4.0` and, per
+its own annotations, relaxes a few points to match real-world corpus practice.
+
+- **Tool:** the Ruby `cddl` gem **0.12.14** (Bormann's RFC 8610 reference
+  implementation — the tool this grammar's `.cat`/`.regexp`/socket features
+  target). On PATH it is often shadowed by the Rust `cddl` crate, so the runner
+  resolves the gem binary via `Gem.bindir`.
+- **Reproduce:** `gem install cddl` then
+  `python scripts/cddl_validate.py "out/*.vcon.json" "examples/*.vcon.json"`
+
+**Results (2026-07-18):**
+
+| Set | Files | Result |
+|-----|-------|--------|
+| Qwythos trajectories (`out/`, public) | 32 | **32/32 valid** |
+| Publishable sample (`examples/`, public) | 1 | **1/1 valid** |
+| Mythos-Agent dataset (`out_mythos/`, gated, local-only) | 65 | **65/65 valid** |
+| **Total** | **98** | **98/98 valid** |
+
+The check is meaningful, not vacuous — negative controls are rejected by the
+grammar: missing `created_at`, missing `parties`, a non-RFC-3339 `created_at`,
+and a `vcon` version outside the enum all fail validation.
+
+> The 65 gated-dataset vCons are validated locally (they are git-ignored and not
+> published here); the counts above are reported for completeness.
+
 ## Quick start
 
 ```bash
@@ -92,12 +123,15 @@ PYTHONPATH=src pytest
 ## Layout
 
 ```
-schema/   vCon JSON Schema (Appendix B) + the full core-03 draft text
+schema/   vCon JSON Schema (Appendix B), vcon.cddl grammar, + core-03 draft text
 data/     vendored Qwythos eval logs (the trajectories)
 docs/     spec notes, the trajectory→vCon mapping, and data-source instructions
+examples/ publishable sample record + its generated vCon
+scripts/  cddl_validate.py — batch CDDL validation via the Ruby cddl gem
 src/vcon_trajectories/
           parse.py    eval markdown → Trajectory objects (truncation-tolerant)
           convert.py  Trajectory → vCon 0.4.0 dict
+          mythos.py   VINAY-UMRETHE/Mythos-Agent (gated) → vCon 0.4.0
           validate.py jsonschema validation + python-vcon cross-check
           __main__.py the end-to-end pipeline / CLI
 out/      generated, schema-valid .vcon.json files
