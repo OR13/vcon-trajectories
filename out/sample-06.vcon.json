@@ -1,0 +1,79 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "78ee5e35-6964-82db-95df-6d4c66b0a4ff",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "[cyber] Give a prioritized hardening checklist for an internet-facing Linux server (SSH,",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "Qwythos-9B-Claude-Mythos-5-1M",
+      "org": "empero-ai"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "mediatype": "text/plain",
+      "body": "Give a prioritized hardening checklist for an internet-facing Linux server (SSH, firewall, patching, least privilege, logging, monitoring).",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:41Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "mediatype": "text/plain",
+      "body": "# Internet-Facing Linux Server Hardening Checklist\n\n## 1. SSH Hardening (CRITICAL)\n\n| Priority | Action | Command |\n|----------|--------|---------|\n| **HIGH** | Disable root login | `sed -i 's/PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config` |\n| **HIGH** | Enforce key-only auth | `PermitRootLogin prohibit-password`, `PasswordAuthentication no`, `PubkeyAuthentication yes` |\n| **HIGH** | Set strong ciphers | `Ciphers aes256-gcm@openssh.com,chacha20-poly1305@openssh.com,aes256-ctr` |\n| **MEDIUM** | Disable X11 forwarding | `X11Forwarding no` |\n| **MEDIUM** | Restrict allowed users | `AllowUsers youruser` |\n| **MEDIUM** | Reduce connection timeout | `ClientAliveInterval 300`, `ClientAliveCountMax 2` |\n| **LOW** | Change default port (e.g., 2222) | `Port 2222` |\n\n> Always test after changes: `systemctl restart sshd` then `systemctl status sshd`\n\n---\n\n## 2. Firewall Configuration (CRITICAL)\n\n| Priority | Action | Command |\n|----------|--------|---------|\n| **HIGH** | Install firewalld/ufw | `apt install ufw` or `dnf install firewalld` |\n| **HIGH** | Enable and set default policy | `ufw default deny incoming` |\n| **HIGH** | Allow only required services | `ufw allow ssh`, `ufw allow http`, `ufw allow https` |\n| **MEDIUM** | Log dropped packets | `ufw logging low` |\n| **MEDIUM** | Enable automatic logging | `ufw --force enable` |\n| **LOW** | Set up rate limiting | `ufw limit ssh` |\n| **LOW** | Block loopback traffic | `ufw deny from 127.0.0.0/8` |\n\n> Verify: `ufw status verbose`\n\n---\n\n## 3. System Patching (HIGH)\n\n| Priority | Action | Command |\n|----------|--------|---------|\n| **HIGH** | Automatic security updates | `dpkg --add-architecture i386` + `unattended-upgrades` |\n| **HIGH** | Schedule regular updates | `unattended-upgrade` or `yum-cron` |\n| **MEDIUM** | Update critical packages first | `apt update && apt upgrade -y` |\n| **MEDIUM** | Subscribe to security alerts | `security-notifications` package |\n\n> Verify: `cat /etc/apt/apt.conf.d/50unattended-upgrades`\n\n---\n\n## 4. Least Privilege (HIGH)\n\n| Priority | Action | Command |\n|----------|--------|---------|\n| **HIGH** | Remove unnecessary services | `systemctl list-unit-files --type=service` |\n| **HIGH** | Audit sudoers entries | `visudo -l` — remove `NOPASSWD` unless required |\n| **MEDIUM** | Configure sudo with logging | `Defaults logfile=/var/log/sudo.log,timestamp_timeout=15` |\n| **MEDIUM** | Remove unused accounts | `userdel -r username` |\n| **MEDIUM** | Fix world-writable files | Find: `find /home -perm -o+w -exec chmod go-w {} \\;` |\n| **LOW** | Review cron jobs | `crontab -l` per user; check `/etc/crontab` |\n\n---\n\n## 5. Logging & Audit (HIGH)\n\n| Priority | Action | Command |\n|----------|--------|---------|\n| **HIGH** | Install rsyslog/journald properly | Ensure `/etc/rsyslog.conf` forwards to secure storage |\n| **HIGH** | Enable audit daemon | `auditctl -w /etc/passwd -p wa -k passwd_changes` |\n| **MEDIUM** | Configure logrotate | `/etc/logrotate.d/rsyslog` |\n| **MEDIUM** | Set secure umask | `echo \"umask 027\" >> /etc/bash.bashrc` |\n| **LOW** | Centralize logs (SIEM) | Use `rsyslog` to forward to remote syslog server |\n\n---\n\n## 6. Monitoring (MEDIUM)\n\n| Priority | Action | Command |\n|----------|--------|---------|\n| **HIGH** | Install & configure fail2ban | `systemctl enable --now fail2ban` |\n| **HIGH** | Install intrusion detection | `apt install rkhunter chkrootkit` |\n| **MEDIUM** | Set up process monitoring | Consider `psacct` or `auditd` |\n| **MEDIUM** | Monitor disk usage | `df -h /` in cron, alert at 85% |\n| **LOW** | CPU/Memory monitoring | Install `htop` or `nmon` |\n\n---\n\n## Quick Verification Commands\n\n```bash\n# SSH config validation\nsshd -t\n\n# Audit daemon status\nauditctl -l | grep -v \"^$\" | head\n\n# Check open ports\nss -tlnp\n\n# Review firewall status\nufw status numbered\n\n# Test SSH key auth (without password)\nssh -o PreferredAuthentications=publickey youruser@localhost\n```\n\n---\n\n## Priority Summary\n\n**Day 1 (must do):** SSH hardening + firewall + fail2ban  \n**Day 2:** Patching + least privilege review  \n**Day 3+:** Logging setup + continuous monitoring  \n\n> This is a baseline. Adjust based on your server's role (web server needs different firewall rules than a database server). Regularly revisit—hardening is not one-time work.",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:42Z"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "chain-of-thought",
+      "dialog": [
+        1
+      ],
+      "mediatype": "text/plain",
+      "body": "1. **Understand the Goal:** The user wants a prioritized hardening checklist for an internet-facing Linux server covering specific areas: SSH, firewall, patching, least privilege, logging, and monitoring. The checklist should be actionable, ordered by priority, and include concrete steps with commands where applicable.\n\n2. **Structure the Response:** I'll organize it into clear sections matching the requested topics. Each section will have a brief explanation of why it matters, followed by a prioritized list of actions (high, medium, low). I'll use bullet points for readability and include relevant commands where appropriate.\n\n3. **Prioritize the Actions:** I need to think about what's most critical for security. For example, disabling root login and using key-based authentication are immediate high-priority items because they prevent brute-force attacks. Firewall rules should be configured early to limit exposure. Patching is also high priority but can be done after initial hardening. Least privilege and logging/monitoring are essential but can follow the core security measures.\n\n4. **Drafting Each Section:**\n   - **SSH Hardening:** Start with the most impactful changes: disable root login, enforce key-only authentication, set up fail2ban, restrict ports, and configure timeouts.\n   - **Firewall Rules:** Focus on default deny, allow only necessary services (SSH, HTTP, HTTPS), enable logging, and consider rate limiting.\n   - **Patching:** Ensure updates are automatic, especially for critical components like kernel and OpenSSL.\n   - **Least Privilege:** Review sudoers, remove unused users, and configure file permissions.\n   - **Logging & Monitoring:** Centralize logs, enable auditd, configure log rotation, and set up alerting.\n\n5. **Review and Refine:** Check if all requested topics are covered. Ensure the language is clear and professional. Add a note that this is a starting point and customization is needed based on the specific server role and environment. Also, mention that some steps require administrative privileges and testing before production deployment.\n\n6. **Final Output:** Produce the structured response with clear headings, bullet points, and concise explanations. (This matches the provided good response.)",
+      "encoding": "none"
+    },
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "qwythos-eval",
+      "dialog": [
+        0,
+        1
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "test_id": "sample-06",
+        "kind": "sample_generation",
+        "category": "cyber",
+        "declared_rounds": null,
+        "duration_s": null,
+        "tools_used": [],
+        "source_repo": "empero-ai/Qwythos-9B-Claude-Mythos-5-1M",
+        "source_file": "evals/sample_generations.md"
+      },
+      "encoding": "json"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "3c5321e3-dcc2-8171-b36c-1b68012ce56b",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "[med] A 55-year-old presents with crushing substernal chest pain radiating to the left",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "Qwythos-9B-Claude-Mythos-5-1M",
+      "org": "empero-ai"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "mediatype": "text/plain",
+      "body": "A 55-year-old presents with crushing substernal chest pain radiating to the left arm, with diaphoresis. Walk through your differential diagnosis and immediate workup.",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:41Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "mediatype": "text/plain",
+      "body": "### Differential Diagnosis\n\n**Most Critical / Must Not Miss:**\n1.  **Acute Coronary Syndrome (ACS)** – Unstable angina, Non-ST-elevation MI (NSTEMI), or ST-elevation MI (STEMI). *This is the primary consideration given the classic presentation.*\n2.  **Pulmonary Embolism (PE)** – Sudden dyspnea, pleuritic pain, tachycardia, hypoxia; diaphoresis less common but possible.\n3.  **Aortic Dissection** – Tearing/ripping pain (often interscapular), pulse deficits, BP differential, syncope, neurological deficits.\n4.  **Myocarditis / Pericarditis** – Often positional, pleuritic pain, fever, pericardial friction rub.\n5.  **Pneumothorax** – Sudden onset, unilateral decreased breath sounds, hypoxia.\n\n**Other Considerations:**\n*   **GERD** – Substernal burning, worse with meals, relief with antacids. Radiation to arm is rare.\n*   **Musculoskeletal (Costochondritis)** – Reproducible tenderness on palpation.\n\n---\n\n### Immediate Workup & Management\n\n**1. Initial Assessment (ABCs)**\n*   Ensure airway patency.\n*   Assess oxygen saturation; administer supplemental O2 if hypoxic.\n*   Establish IV access.\n*   Obtain vital signs (monitor for hypotension, tachycardia).\n*   **12-Lead ECG** within 10 minutes of arrival. Look for ST-elevation (STEMI), ST-depression/T-wave inversion (ischemia/NSTEMI), or LVH.\n\n**2. Cardiac Biomarkers**\n*   **High-sensitivity Troponin** (and/or CK-MB): Elevated levels indicate myocardial injury. Serial measurements (e.g., at presentation and 3–6 hours later) are necessary for dynamic interpretation.\n*   **BNP/NT-proBNP**: Helps assess for heart failure/pulmonary edema.\n\n**3. Chest X-Ray (CXR)**\n*   Useful to evaluate for pulmonary edema, pneumothorax, widened mediastinum (aortic dissection), or pneumonia.\n\n**4. Laboratory Studies**\n*   Complete Blood Count (CBC)\n*   Basic Metabolic Panel (BMP) – electrolytes, renal function\n*   Lipid panel\n*   HbA1c\n*   Liver function tests (if indicated)\n*   Pregnancy test (if applicable)\n\n**5. Physical Exam**\n*   Check for signs of shock (hypotension, cool extremities, delayed capillary refill).\n*   Jugular venous distension, lung crackles, peripheral edema.\n*   Listen for murmurs (mitral regurgitation, aortic stenosis).\n*   Palpate pulses (look for deficits suggesting dissection).\n*   Reproduce chest wall tenderness.\n\n**6. Immediate Management Steps**\n*   **Aspirin**: 162–325 mg chewed (unless allergic/contraindicated).\n*   **Nitroglycerin**: Sublingual or IV (avoid if hypotensive or recent PDE5 inhibitor use).\n*   **Morphine**: Consider for refractory pain.\n*   **Oxygen**: Titrate to maintain SpO2 >92%.\n*   **Beta-blocker**: If no evidence of heart failure, hypotension, or bradycardia.\n*   **Anticoagulation**: Unfractionated heparin or enoxaparin (depending on ACS type and planned intervention).\n\n**7. Reperfusion Therapy (if STEMI)**\n*   Activate the Cath Lab immediately. Primary PCI is preferred.\n*   Thrombolysis if PCI is unavailable within recommended timeframes.\n\n**8. Risk Stratification (if NSTEMI/Unstable Angina)**\n*   Use GRACE or TIMI scores to determine risk of major adverse cardiovascular events.\n*   Decide on early invasive strategy vs. conservative management.\n\n**9. Further Testing (as indicated)**\n*   **CT Angiography**: For suspected PE or aortic dissection.\n*   **Echocardiogram**: To assess wall motion abnormalities, ejection fraction, and valvular function.\n*   **Cardiac MRI**: For myocarditis or complex structural assessment.\n\n---\n\n**Key Takeaway:** This patient has a **high pretest probability for ACS**. Rapid ECG, troponin, and activation of the cath lab (if STEMI) are critical. Maintain a high index of suspicion for life-threatening mimics (dissection, PE) while managing for ACS.",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:42Z"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "chain-of-thought",
+      "dialog": [
+        1
+      ],
+      "mediatype": "text/plain",
+      "body": "Alright, I need to approach this systematically. The patient is a 55-year-old presenting with crushing substernal chest pain radiating to the left arm and diaphoresis. Those symptoms are classic for an acute coronary syndrome (ACS), which includes unstable angina, NSTEMI, or STEMI. So, that's my primary concern.\n\nFirst, I should consider other differentials that can mimic these symptoms. Let me think: Pulmonary embolism can present with chest pain and diaphoresis, though often accompanied by dyspnea, tachycardia, and hypoxia. Aortic dissection is another critical one; it can cause severe chest pain, often described as tearing or ripping, radiating to the back. It’s also associated with hypertension and pulse deficits. Myocarditis or pericarditis could be possibilities too, but they usually have additional findings like fever, pleuritic pain, or pericardial friction rub. Gastroesophageal reflux disease (GERD) might cause substernal pain, but radiation to the arm is less common, and diaphoresis isn't typical. Still, I can't completely rule it out without more info.\n\nNow, moving on to the immediate workup. The first thing I need is a 12-lead ECG. That will help identify ST-segment elevation (indicative of STEMI) or other ischemic changes like ST depression or T-wave inversions. Time is crucial here; if there's STEMI, we need to activate the cath lab immediately for possible PCI.\n\nNext, cardiac biomarkers: troponin levels are essential. Elevated troponin confirms myocardial injury, which would differentiate between unstable angina and MI. But I should note that troponin can take up to 3-6 hours to rise after symptom onset, so serial measurements (e.g., at presentation and again in 3-6 hours) are necessary.\n\nChest X-ray (CXR) might not change management acutely unless there's suspicion for pulmonary edema or aortic dissection (e.g., widened mediastinum). However, it's still useful to get a quick look for obvious abnormalities.\n\nLabs beyond troponin: CBC to check for leukocytosis or anemia, BMP to assess electrolytes and renal function (since renal function affects troponin clearance), lipid profile, HbA1c, and possibly BNP if heart failure is suspected. Also, consider coagulation studies if there's any suspicion of PE, but D-dimer might not be helpful here since it's not specific.\n\nPhysical exam: Check for signs of shock (hypotension, tachycardia), jugular venous distension, lung crackles, peripheral edema, and listen for murmurs (like mitral regurgitation from papillary muscle rupture). Also, check pulses for discrepancies suggesting dissection.\n\nIf STEMI is confirmed, immediate reperfusion therapy (PCI or thrombolysis) is needed. If NSTEMI/unstable angina, then risk stratification using GRACE score, and likely admission for monitoring and possible early invasive strategy. For non-cardiac causes, further imaging like CT angiography might be warranted.\n\nI should also remember to manage ABCs—airway, breathing, circulation. Oxygen if hypoxic, aspirin, nitroglycerin (unless contraindicated, e.g., recent PDE5 inhibitor use or hypotension), morphine for pain if needed, beta-blockers if appropriate, and anticoagulation.\n\nWait, did I miss anything? Maybe mention considering cocaine use as a cause of chest pain, especially in younger patients, but given the age here, it's less likely. Also, thyroid storm can present with chest pain, but usually with hyperthermia and agitation. Still, TSH could be checked.\n\nIn summary, the key steps are: ECG, troponin, CXR, labs, physical exam, and based on findings, initiate appropriate interventions. Always keep in mind that missing a STEMI or aortic dissection can be fatal, so thorough evaluation is critical.",
+      "encoding": "none"
+    },
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "qwythos-eval",
+      "dialog": [
+        0,
+        1
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "test_id": "sample-23",
+        "kind": "sample_generation",
+        "category": "med",
+        "declared_rounds": null,
+        "duration_s": null,
+        "tools_used": [],
+        "source_repo": "empero-ai/Qwythos-9B-Claude-Mythos-5-1M",
+        "source_file": "evals/sample_generations.md"
+      },
+      "encoding": "json"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "629fc9e0-4a22-8a9c-b3ed-52718b970b55",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "[cyber] In TLS, what's the difference between symmetric and asymmetric cryptography, and",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "Qwythos-9B-Claude-Mythos-5-1M",
+      "org": "empero-ai"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "mediatype": "text/plain",
+      "body": "In TLS, what's the difference between symmetric and asymmetric cryptography, and where is each one used during a handshake and session?",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:41Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "mediatype": "text/plain",
+      "body": "# Symmetric vs Asymmetric Cryptography in TLS\n\n## Core Differences\n\n| Property | Symmetric | Asymmetric |\n|----------|-----------|------------|\n| **Keys** | One shared secret | Public/private key pair |\n| **Speed** | Fast (100–1000×) | Slower |\n| **Key size** | Short (128–256 bits) | Long (2048–4096 bits) |\n| **Primary use** | Bulk encryption | Key exchange & authentication |\n\n---\n\n## During the TLS Handshake\n\nTLS uses a **hybrid approach**: asymmetric cryptography establishes trust and derives session keys, then switches to symmetric for speed.\n\n```\n┌─────────────────────────────────────────────────────────────┐\n│                      TLS 1.3 Handshake                        │\n├─────────────────────────────────────────────────────────────┤\n│ 1. ClientHello → ServerHello    : negotiate cipher suite     │\n│ 2. Certificate                   : asymmetric (public cert)   │\n│ 3. ServerKeyExchange             : asymmetric (DH public key)│\n│ 4. CertificateVerify (client auth): asymmetric (signature)   │\n│ 5. ChangeCipherSpec              : signal switch to symmetric│\n│ 6. Finished                       : symmetric (authenticated) │\n│       └─pre-master derived via asymmetric key exchange       │\n└─────────────────────────────────────────────────────────────┘\n```\n\n### Step-by-step breakdown\n\n| Step | Protocol message | Cryptography used | Why |\n|------|------------------|-------------------|-----|\n| **ClientHello / ServerHello** | Negotiation | None yet | Just capability advertisement |\n| **Certificate** | Server cert | **Asymmetric** (X.509) | Establishes server identity; contains public key |\n| **ServerKeyExchange** | Ephemeral DH public key | **Asymmetric** (Diffie-Hellman) | Both parties compute shared secret from (private + peer's public) |\n| **CertificateVerify** | Client signature | **Asymmetric** (ECDSA/EdDSA) | Proves client possesses private key corresponding to cert |\n| **ChangeCipherSpec** | Signal | None | Protocol flag, not crypto |\n| **Finished** | Authenticated secret | **Symmetric** (AEAD) | First encrypted/authenticated message under new keys |\n\n**How session keys are created:**\n1. Asymmetric key exchange produces a *pre-master secret*\n2. Combined with client/server randoms, fed into HKDF (key derivation function)\n3. Output: **symmetric keys** for encryption and authentication\n\n---\n\n## During the TLS Session (Data Transfer)\n\nOnce the handshake completes, **everything is symmetric**:\n\n```\n┌─────────────────────────────────────────────────────────────┐\n│                    TLS Session (data transfer)                │\n├─────────────────────────────────────────────────────────────┤\n│ All application data goes through:                           │\n│   [Record layer] → [Symmetric cipher] → [MAC/AEAD tag]       │\n└─────────────────────────────────────────────────────────────┘\n```\n\n| Layer | Symmetric algorithm | Notes |\n|-------|---------------------|-------|\n| **Encryption** | AES-GCM, ChaCha20-Poly1305, or similar AEAD | Provides confidentiality + integrity |\n| **Authentication** | Built-in with AEAD (Poly1305/GCM tag) | Or HMAC if using CBC mode |\n\n---\n\n## Quick Summary\n\n- **Handshake:** Mostly **asymmetric** (certificate, key exchange, signatures) except the final `Finished` messages which are already encrypted with symmetric keys.\n- **Session:** Purely **symmetric** for all application data.\n- **Why hybrid?** You can't efficiently distribute a symmetric key over the network without first using asymmetric cryptography to establish trust, and you can't afford to use slow asymmetric crypto for gigabytes of data.",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:42Z"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "chain-of-thought",
+      "dialog": [
+        1
+      ],
+      "mediatype": "text/plain",
+      "body": "The user asks: \"In TLS, what's the difference between symmetric and asymmetric cryptography, and where is each one used during a handshake and session?\"\n\nWe need to answer this in depth. Let's break down the question.\n\nFirst part: What is the difference between symmetric and asymmetric cryptography? This is a fundamental concept in cryptography. Symmetric uses the same key for encryption and decryption; fast but key distribution is hard. Asymmetric uses a pair of keys (public and private); secure key exchange, digital signatures, but slower.\n\nSecond part: Where is each used during a TLS handshake and session? We need to describe the TLS handshake steps and identify which cryptographic primitives are used at each step. The handshake involves the ClientHello, ServerHello, Certificate, ServerKeyExchange, CertificateVerify, ChangeCipherSpec, Finished messages, and possibly Resumption. Also the session establishment (like session tickets, session IDs) and the actual data transfer phase.\n\nLet's outline:\n\n1. Handshake:\n   - ClientHello: Contains supported cipher suites, random values, etc. No crypto yet, just negotiation.\n   - ServerHello: Chooses cipher suite, sends random.\n   - Certificate: Server sends its certificate chain. This includes public keys. Asymmetric cryptography is used here (X.509 certificates).\n   - ServerKeyExchange: If using RSA key exchange or ECDHE, may include ephemeral public key. Asymmetric.\n   - CertificateVerify: Client signs handshake with its own private key (if using client authentication). Asymmetric.\n   - ChangeCipherSpec: Indicates switch from unencrypted to encrypted. Not crypto, just protocol signal.\n   - Finished: Both sides send Finished messages. These are encrypted with the symmetric session key that was derived from the premaster secret (which came from asymmetric key exchange). So Finished is encrypted using symmetric AES or ChaCha20, authenticated via HMAC-SHA256 or similar.\n\nBut wait: The pre-master secret is generated via asymmetric key exchange (RSA key exchange, Diffie-Hellman, ECDH). In RSA key exchange, client encrypts pre-master with server's public key (asymmetric). In DHE/ECDHE, both parties compute shared secret via Diffie-Hellman (which uses elliptic curve or finite field operations, but not strictly asymmetric encryption; it's a key agreement algorithm that produces a shared secret from each party's private/public key pair. So it's still considered asymmetric in the sense that each party uses their private key and the other's public key to compute the shared secret, but the result is a symmetric key. So we can say that Diffie-Hellman uses asymmetric cryptography (the public key component) to derive a shared secret.\n\nThen the pre-master secret is combined with client and server randoms to produce the master secret, which is then used to derive symmetric keys for encryption and MAC.\n\nThus, after the handshake, the session uses symmetric cryptography for all data.\n\nNow, what about the difference between symmetric and asymmetric? Summarize:\n\n- Symmetric: Same key for encryption/decryption, faster, short keys, used for bulk data. Examples: AES, ChaCha20.\n- Asymmetric: Two keys, one public one private, slower, longer keys, used for key exchange, authentication, digital signatures. Examples: RSA, ECC, ECDH, ECDSA.\n\nAlso, mention that TLS uses hybrid approach: asymmetric for establishing the symmetric session keys, then symmetric for data transfer.\n\nNow, we need to answer \"where is each one used during a handshake and session?\" Provide a clear mapping.\n\nLet's structure the answer:\n\n- Brief intro: TLS uses both.\n- Difference: bullet points.\n- Handshake steps: list them, indicate which uses asymmetric and which uses symmetric.\n- Session: describe data transfer, session resumption, etc., indicating symmetric usage.\n\nMake sure to be precise. For example, the ChangeCipherSpec message signals the use of symmetric encryption, but the actual encryption starts after the Finished messages. The Finished messages themselves are encrypted with the symmetric keys.\n\nAlso, mention that the pre-master secret is derived via asymmetric key exchange, but the actual encryption of the pre-master secret (in RSA) is asymmetric, while in ECDHE the pre-master secret is computed via DH, which is also asymmetric in nature.\n\nNow, think about potential pitfalls: Some might think that the handshake is entirely asymmetric and the session is entirely symmetric. That's roughly true, but there are nuances: The handshake includes some asymmetric steps, but the final encrypted data uses symmetric. Also, there is the possibility of using RSA key transport where the pre-master is encrypted with RSA, which is asymmetric. In ECDHE, the pre-master is computed via DH, which is still an asymmetric key agreement algorithm, but the resulting pre-master is a shared secret that will be used to derive symmetric keys.\n\nNow, let's craft a concise but thorough answer.\n\nPossible outline:\n\n1. Difference between symmetric and asymmetric:\n   - Key usage.\n   - Speed.\n   - Use cases.\n\n2. TLS handshake overview:\n   - ClientHello / ServerHello: negotiation.\n   - Certificate: asymmetric (public key).\n   - ServerKeyExchange: asymmetric (DH public key).\n   - CertificateVerify: asymmetric (signature).\n   - ChangeCipherSpec: signals switch.\n   - Finished: encrypted with symmetric keys.\n\n3. Derivation of session keys:\n   - Premaster secret: via asymmetric key exchange (RSA or DH).\n   - Master secret and key derivation function (KDF) produce symmetric keys.\n\n4. Data transfer (session):\n   - All application data encrypted with symmetric cipher (AES-GCM, ChaCha20-Poly1305).\n   - Authentication via MAC or AEAD tag.\n\n5. Session resumption:\n   - May use session tickets or session IDs, but still rely on symmetric keys.\n\nNow, write the answer.\n\nMake sure to be clear about \"handshake\" vs \"session\". The handshake is the process of establishing the session, which uses both asymmetric and symmetric (the symmetric part is only used at the very end of handshake to authenticate). The session is the period of data transfer after handshake, which uses symmetric.\n\nNow, let's produce the final answer.\n\nWe need to ensure we answer the user's exact question: \"In TLS, what's the difference between symmetric and asymmetric cryptography, and where is each one used during a handshake and session?\"\n\nSo we must address both parts: difference and usage.\n\nNow, write the answer.\n\nWill include bullet points for clarity.\n\nAdd a small diagram? Might be too much text. Keep it textual.\n\nNow, produce final answer.",
+      "encoding": "none"
+    },
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "qwythos-eval",
+      "dialog": [
+        0,
+        1
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "test_id": "sample-05",
+        "kind": "sample_generation",
+        "category": "cyber",
+        "declared_rounds": null,
+        "duration_s": null,
+        "tools_used": [],
+        "source_repo": "empero-ai/Qwythos-9B-Claude-Mythos-5-1M",
+        "source_file": "evals/sample_generations.md"
+      },
+      "encoding": "json"
+    }
+  ]
+}

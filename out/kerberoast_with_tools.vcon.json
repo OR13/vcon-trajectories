@@ -1,0 +1,195 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "201de202-8364-8f2b-8249-d22fb48f6e85",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "kerberoast_with_tools",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "Qwythos-9B-Claude-Mythos-5-1M",
+      "org": "empero-ai"
+    },
+    {
+      "type": "bot",
+      "name": "web_search",
+      "org": "empero-ai"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "mediatype": "text/plain",
+      "body": "What is the hashcat hash-mode (-m) number for cracking a Kerberos TGS-REP ticket extracted via Kerberoasting? Search the web to confirm the exact mode number, then state it.",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:41Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        2
+      ],
+      "originator": 1,
+      "application": "web_search",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "web_search",
+        "input": {
+          "query": "hashcat kerberoast TGS-REP mode number"
+        }
+      },
+      "encoding": "json",
+      "start": "2026-07-14T12:41:42Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        1
+      ],
+      "originator": 2,
+      "application": "web_search",
+      "mediatype": "application/json",
+      "body": {
+        "_raw_result": "{\"query\": \"hashcat kerberoast TGS-REP mode number\", \"results\": [{\"title\": \"hashcat unable to crack simple kerberos tgs hashes\", \"url\": \"https://hashcat.net/forum/thread-13324.html\", \"snippet\": \"Jul 25, 2025 ... Hello! Thanks in advance for the help. Problem as follows: 1. Trying to crack a Kerberos hash gained via Kerberoasting in my Lab using ...\"}, {\"title\": \"Output issue with kerberoast hashes, does not match hashcat format\", \"url\": \"https://github.com/Pennyw0rth/NetExec/issues/301\", \"snippet\": \"May 13, 2024 ... Describe the bug Kerberosoast etype 23, etype 17, and etype 18 do not match the hashcat parser. The hashcat parser expects in this format ...\"}, {\"title\": \"Kerberoasting not working - hashcat Forum\", \"url\": \"https://hashcat.net/forum/archive/index.php?thread-8987.html\", \"snippet\": \"Feb 20, 2020 ... I tried to crack the hash with the current hashcat version: hashcat64.exe -m 13100 -OC:\\\\hash.txt C:\\\\realpw.txt --force The wordlist contains only the correct ...\"}, {\"title\": \"Kerberoast - HackTricks\", \"url\": \"https://hacktricks.wiki/en/windows-hardening/active-directory-methodology/kerberoast.html\", \"snippet\": \"Kerberoasting focuses on the acquisition of TGS tickets, specifically those related to services operating under user accounts in Active Directory (AD),...\"}, {\"title\": \"Kerberos Deep Dive Part 2 - Kerberoasting - Compass Security\", \"url\": \"https://www.compass-security.com/fileadmin/Research/Presentations/2025_02_Kerberos_Deep_Dive_P2_Kerberoasting.pdf\", \"snippe"
+      },
+      "encoding": "json",
+      "start": "2026-07-14T12:41:43Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        2
+      ],
+      "originator": 1,
+      "application": "web_search",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "web_search",
+        "input": {
+          "query": "hashcat mode 13100 kerberos etype 23 TGS-REP"
+        }
+      },
+      "encoding": "json",
+      "start": "2026-07-14T12:41:44Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        1
+      ],
+      "originator": 2,
+      "application": "web_search",
+      "mediatype": "application/json",
+      "body": {
+        "_raw_result": "{\"query\": \"hashcat mode 13100 kerberos etype 23 TGS-REP\", \"results\": [{\"title\": \"hashcat - Code Powered\", \"url\": \"https://wiki.codepowered.com/xwiki/bin/view/hashcat/\", \"snippet\": \"October 27, 2025 - To disable the timeout, see: ... @ Accel:256 Loops:128 Thr:32 Vec:1 ------------------------------------------------- * Hash-Mode 13100 (Kerberos 5, etype 23, TGS-REP) ------------------------------------------------- Speed.#1.........: 1467.8 MH/s (58.07ms) @ Accel:256 ...\"}, {\"title\": \"Kerberos Deep Dive Part 2 - Kerberoasting July 2025, Alex Joss\", \"url\": \"https://www.compass-security.com/fileadmin/Research/Presentations/2025_02_Kerberos_Deep_Dive_P2_Kerberoasting.pdf\", \"snippet\": \"# hashcat -b -m13100 / -m19600 / -m19700 \\u00b7 ------------------------------------------------- * Hash-Mode 13100 (Kerberos 5, etype 23, TGS-REP) ------------------------------------------------- Speed.#*.........: 2341.1 MH/s \\u00b7\"}, {\"title\": \"-m 13100 (Kerberos 5 TGS-REP etype 23) return Invalid hash-type specified ???\", \"url\": \"https://hashcat.net/forum/thread-5482.html\", \"snippet\": \"1 2 3 4 5 \\u2026 29 Next \\u00bb -m 13100 (Kerberos 5 TGS-REP etype 23) return Invalid hash-type specified ???\"}, {\"title\": \"Cracking Kerberos 5, etype 23, TGS-REP hashes | blog @blackninja23\", \"url\": \"https://blackninja23.github.io/tags/hashcat-13100/\", \"snippet\": \"smbclient rustscan oscp windows oscp nmap kerberoasting impacket psexec impacket GetUserSPNs(Kerberoasting) hashcat 13100 hashcat\"}, {\"title\": \"Kerbe"
+      },
+      "encoding": "json",
+      "start": "2026-07-14T12:41:45Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "mediatype": "text/plain",
+      "body": "Based on the search results, the hashcat hash-mode (-m) number for cracking a Kerberos TGS-REP ticket (etype 23) extracted via Kerberoasting is **13100**.\n\nMultiple authoritative sources confirm this:\n- The hashcat wiki explicitly lists \"* Hash-Mode 13100 (Kerberos 5, etype 23, TGS-REP)\"\n- The hashcat forums have threads titled \"-m 13100 (Kerberos 5 TGS-REP etype 23)\"\n- Security blogs and presentations reference using `-m13100` for Kerberoast TGS-REP hashes\n\nSo the command would be something like: `hashcat -m 13100 hash.txt wordlist.txt`",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:46Z"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "chain-of-thought",
+      "dialog": [
+        1
+      ],
+      "mediatype": "text/plain",
+      "body": "I need to find the hashcat mode number for cracking Kerberos TGS-REP tickets from Kerberoasting. This is a fairly specific technical question about password cracking tools. I should use web_search to find the exact hashcat mode number, as this is a specific identifier that could be subject to change or could be incorrectly remembered. Let me search for \"hashcat kerberoast mode\" or similar terms to get the correct mode number.",
+      "encoding": "none"
+    },
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "chain-of-thought",
+      "dialog": [
+        3
+      ],
+      "mediatype": "text/plain",
+      "body": "The search results show some relevant threads but none clearly state the mode number. One result mentions \"-m 13100\" but that's for a different context (possibly an older hash type). I need to search more specifically for hashcat mode numbers for Kerberos etypes, particularly etype 23 (TGS-REP) which is the common one for Kerberoasting. Let me try a more targeted search.",
+      "encoding": "none"
+    },
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "chain-of-thought",
+      "dialog": [
+        5
+      ],
+      "mediatype": "text/plain",
+      "body": "Excellent! The search results clearly show that hashcat mode 13100 is used for Kerberos 5, etype 23, TGS-REP hashes. Multiple sources confirm this:\n- The hashcat wiki shows \"* Hash-Mode 13100 (Kerberos 5, etype 23, TGS-REP)\"\n- The Compass Security presentation shows \"# hashcat -b -m13100 / -m19600 / -m19700\" with \"* Hash-Mode 13100 (Kerberos 5, etype 23, TGS-REP)\"\n- The hashcat forum thread title is \"-m 13100 (Kerberos 5 TGS-REP etype 23) return Invalid hash-type specified ???\"\n- The blackninja23 blog mentions \"hashcat 13100 hashcat\" in context of kerberoasting\n- The Lares labs article says \"In hashcat, use hash mode 13100 (Kerberos 5 TGS-REP etype 23) to try to crack the hash\"\n\nThis is consistent and well-documented across multiple authoritative sources. The mode number for cracking Kerberos TGS-REP tickets extracted via Kerberoasting is 13100.",
+      "encoding": "none"
+    },
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "qwythos-eval",
+      "dialog": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "test_id": "kerberoast_with_tools",
+        "kind": "tool_test",
+        "category": null,
+        "declared_rounds": 3,
+        "duration_s": 23.1,
+        "tools_used": [
+          "web_search"
+        ],
+        "source_repo": "empero-ai/Qwythos-9B-Claude-Mythos-5-1M",
+        "source_file": "evals/tool_test_outputs.md"
+      },
+      "encoding": "json"
+    }
+  ],
+  "attachments": [
+    {
+      "purpose": "tool-definitions",
+      "start": "2026-07-14T12:41:41Z",
+      "party": 1,
+      "dialog": 0,
+      "mediatype": "application/json",
+      "body": [
+        {
+          "name": "web_search"
+        }
+      ],
+      "encoding": "json"
+    }
+  ]
+}

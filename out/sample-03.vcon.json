@@ -1,0 +1,79 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "1c3ceccf-7cf9-84c4-b817-8efcbe19e468",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "[cyber] How does Kerberoasting work, and how should a blue team detect and mitigate it?",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "Qwythos-9B-Claude-Mythos-5-1M",
+      "org": "empero-ai"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "mediatype": "text/plain",
+      "body": "How does Kerberoasting work, and how should a blue team detect and mitigate it?",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:41Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "mediatype": "text/plain",
+      "body": "## Kerberoasting: Attack Mechanism, Detection, and Mitigation\n\n### How Kerberoasting Works\n\nKerberoasting is an offline password cracking attack that targets **service accounts** whose passwords are stored as NTLM hashes in Active Directory. Here's the step-by-step mechanism:\n\n```\n┌─────────────┐    ┌──────────────┐    ┌─────────────┐    ┌───────────────┐\n│   Attacker  │───▶│   DC/KDC     │───▶│   KDC       │───▶│   Service     │\n│  Account    │    │  (Kerberos)  │    │   Response  │    │   Account     │\n└─────────────┘    └──────────────┘    └─────────────┘    └───────────────┘\n        │                │                    │                     │\n        │                │                    ▼                     │\n        │                │           [TGS Request]            [NTLM Hash]\n        │                │                    │                  extracted\n        │                │                    │                  ↓\n        │                │              [TGS with    │          [Crack hash\n        │                │               embedded    │          offline]\n        │                │                NTLM hash  │\n        │                │                    │\n        │                │              [Return TGS]│\n        │                │                    │\n        │                │                    │\n        │                │                    │\n        │                │                    │\n        │                │                    │\n        ▼                ▼                    ▼                     ▼\n```\n\n**The Attack Flow:**\n\n1. **Compromise an account** with sufficient privileges (typically a domain user with ability to query service accounts)\n\n2. **Enumerate service accounts**: The attacker queries Active Directory for Service Principal Names (SPNs):\n   ```powershell\n   Get-ADServiceAccount -Filter * | Select Name, ServicePrincipalName\n   ```\n   Or uses tools like BloodHound, Mimikatz, or custom scripts\n\n3. **Request TGS tickets**: For each service account, the attacker requests a Ticket Granting Service (TGS) ticket:\n   ```powershell\n   kinit <username>@<domain>\n   ```\n   Or via Mimikatz:\n   ```\n   kerberos::ptt <service_account>@<domain>\n   ```\n\n4. **Extract the hash**: The KDC embeds the service account's **NTLM hash** inside the encrypted portion of the TGS ticket. The attacker extracts this hash (e.g., using Mimikatz's `lsadump::sekurlsa::tickets` command or PowerShell `Get-DsTicket`):\n   ```powershell\n   $ticket = Get-DsTicket -User <username>\n   $hash = $ticket.EncryptedPart -replace '\\{.*?}', '' -split '\\{' | Select-Object -Last 1\n   ```\n\n5. **Crack offline**: Using tools like Hashcat or John the Ripper:\n   ```bash\n   hashcat -m 1000 hashes.txt rockyou.txt\n   ```\n\n6. **Escalate privileges**: Once cracked, the attacker gains full access to any system the service account can authenticate to (SQL Server, Exchange, file shares, etc.).\n\n### Detection Strategies\n\n| Indicator | Tool/Log Source | Query Example |\n|-----------|-----------------|---------------|\n| **Unusual TGS volume** | AD FS, Event ID 4769 | `Get-EventLog -LogName Security -InstanceId 4769 \\| Where-Object {$_.\\TargetName -like \"*svc*\"} \\| Group-Object TargetName \\| Sort Count -Descending \\| Select -First 10` |\n| **Requests to disabled accounts** | Custom script | Check if `Enabled` property is `$false` but still receiving TGS |\n| **High entropy in target names** | Splunk/Elasticsearch | `\"target_name\" NOT LIKE \"%svc%\" AND \"target_name\" NOT LIKE \"%ms%\"` |\n| **Mimikatz registry artifacts** | EDR, Registry monitoring | `HKLM\\SYSTEM\\CurrentControlSet\\Services\\mimikatz\\Parameters` |\n| **BloodHound data exfil** | Network monitoring | Outbound SMB traffic to internal DCs |\n| **Atypical hours of activity** | SIEM | Correlate with normal business hours baseline |\n| **Multiple failed SPN queries** | AD logs | Track rapid-fire `Get-ADServiceAccount` calls |\n\n**Specific Detection Queries:**\n\n**Splunk example:**\n```splunk\nindex=security sourcetype=microsoft:windows_security_audit \n| where EventCode=4769 \n| transaction src_ip, target_principal, timestamp span=60m \n| stats count by target_principal, src_ip \n| where count > 50 OR target_principal LIKE \"%_svc%\" \n| table _time, target_principal, count, src_ip\n```\n\n**PowerShell monitoring script:**\n```powershell\n$serviceAccounts = Get-ADServiceAccount -Filter * -Properties Enabled\nforeach ($svc in $serviceAccounts) {\n    $tgsCount = (Get-WinEvent -LogName Security -FilterHashtable @{EventId=4769} | \n                Where-Object { $_.Message -match $svc.Name }).Count\n    if ($tgsCount -gt 100) {\n        \"ALERT: High TGS requests for $($svc.Name): $tgsCount\" | Send-MailMessage\n    }\n}\n```\n\n**BloodHound data exfiltration detection:**\nMonitor for rapid enumeration patterns—legitimate admins typically query a few hundred service accounts over days; attackers will dump all in minutes.\n\n### Mitigation Measures\n\n#### Primary Controls (Most Effective)\n\n**1. Remove SPNs from service accounts**\nThis is the single most effective mitigation—if there's no SPN, there's no TGS to steal.\n\n```powershell\n# Remove SPN from a service account\nSet-ADServiceAccount -Identity <name> -NoServicePrincipalName\n```\n\nIf the account must remain active, migrate the SPN to a dedicated service account with stronger credentials.\n\n**2. Disable unused service accounts**\n```powershell\nDisable-ADServiceAccount -Identity <name> -Confirm:$false\n```\n\n**3. Apply least privilege**\n- Remove unnecessary rights to `Get-ADServiceAccount`, `Get-ADServicePrincipalName`, and other enumeration permissions\n- Restrict TGS requests to only accounts that actually need Kerberos authentication\n\n#### Secondary Controls\n\n**4. Enable Kerberos logging**\nEnsure Event ID 4769 (Kerberos service ticket issued) is logged and retained.\n\n**5. Deploy endpoint protection**\nModern EDR solutions (CrowdStrike, Microsoft Defender for Endpoint, SentinelOne) can detect Mimikatz execution and process injection techniques used during the attack.\n\n**6. Use constrained delegation**\nInstead of giving accounts unrestricted SPN access, configure constrained delegation to limit which servers they can reach.\n\n**7. Regular audits**\n- Quarterly reviews of service accounts\n- Verify all SPNs are documented and justified\n- Remove stale accounts\n\n**8. Monitor for Mimikatz usage**\nTrack registry modifications to `HKLM\\SYSTEM\\CurrentControlSet\\Services\\mimikatz\\Parameters` and watch for suspicious process trees.\n\n### Summary Table\n\n| Control | Priority | Effort | Impact |\n|---------|----------|--------|--------|\n| Remove unnecessary SPNs | Critical | Low | Very High |\n| Disable unused accounts | Critical | Low | High |\n| Least privilege enforcement | High | Medium | High |\n| Enable Kerberos logging | High | Low | Medium |\n| EDR deployment | High | Medium | High |\n| BloodHound monitoring | Medium | Medium | Medium |\n\nKerberoasting remains effective because it targets accounts that are already privileged and often have weak passwords. The most robust defense is to eliminate the attack surface entirely by removing SPNs from service accounts that don't strictly require Kerberos authentication, combined with comprehensive logging and endpoint detection.",
+      "encoding": "none",
+      "start": "2026-07-14T12:41:42Z"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "chain-of-thought",
+      "dialog": [
+        1
+      ],
+      "mediatype": "text/plain",
+      "body": "We need to answer the question: \"How does Kerberoasting work, and how should a blue team detect and mitigate it?\" This is a technical security question about Kerberos authentication attacks.\n\nFirst, I need to explain what Kerberoasting is. It's an attack where an attacker obtains service ticket requests (TGS) for service accounts, then extracts the service account's password hash from the TGS response, allowing them to crack the password offline. The attacker typically uses tools like Mimikatz to request service tickets.\n\nKey steps in Kerberoasting:\n1. Attacker gains access to a compromised account with privileges (e.g., domain user with Read/Write to Service Principals).\n2. Attacker enumerates all Service Principal Names (SPNs) registered in Active Directory using `Get-ADServiceAccount` or similar.\n3. For each SPN, attacker requests a TGS using `kinit` or Mimikatz with the username and SPN.\n4. The server returns a TGS that includes the service account's NTLM hash.\n5. Attacker extracts the hash and cracks it offline.\n\nNow, detection: How can a blue team detect this? Look for unusual patterns:\n- High volume of service ticket requests from a single account.\n- Requests to service accounts that are not typically accessed (e.g., SPNs that are rarely used).\n- Requests for TGS to service accounts that have been disabled or are no longer in use.\n- Use of `Get-ADServiceAccount` commands or similar enumeration.\n- Monitoring for Mimikatz usage (registry keys, process execution).\n- Check for abnormal timing: TGS requests for service accounts that are supposed to be offline.\n- Look for requests to service accounts that are not in the domain's SPN list (or are in a different forest).\n\nMitigation: What can organizations do to reduce risk?\n- Disable unnecessary service accounts (e.g., disable those not in use).\n- Remove SPNs from accounts that don't need them.\n- Use least privilege: Only give accounts the minimum permissions needed to request service tickets.\n- Enable Kerberos logging and monitoring (e.g., Event ID 4769 for TGS requests).\n- Use constrained delegation properly.\n- Implement network segmentation.\n- Deploy endpoint detection and response (EDR) solutions.\n- Regularly audit service accounts.\n- Consider using modern authentication protocols (like OAuth2) where possible.\n\nAlso, mention that Kerberoasting relies on the assumption that the service account password is stored as NTLM hash, which is true for most service accounts in AD. So if you remove the SPN, you prevent the attacker from requesting the TGS.\n\nI should also note that Kerberoasting is often combined with other attacks, like Golden Ticket (if the attacker gets the KRBTGT hash), but the focus here is Kerberoasting.\n\nLet me structure the answer:\n1. Introduction: Define Kerberoasting.\n2. How it works: Step-by-step explanation of the attack.\n3. Detection: Specific indicators of compromise (IOCs), logs to monitor, tools to use.\n4. Mitigation: Steps to reduce risk, including disabling unused accounts, removing SPNs, etc.\n5. Additional considerations: Best practices, ongoing monitoring.\n\nMake sure to include technical details like Event IDs, specific commands (e.g., `Get-ADServiceAccount`), and tools (Mimikatz, BloodHound, Splunk queries). Also mention that Kerberoasting is particularly effective against service accounts because their passwords are often weak.\n\nPotential pitfalls: Don't forget to mention that Kerberoasting requires the attacker to have access to the compromised account, so preventing initial compromise is crucial. Also, mention that some service accounts may be required for certain services (e.g., SQL Server, Exchange), so disabling them must be done carefully.\n\nI think I've covered the main points. Let me write out the answer now.",
+      "encoding": "none"
+    },
+    {
+      "type": "report",
+      "vendor": "empero-ai",
+      "product": "Qwythos-9B-Claude-Mythos-5-1M",
+      "schema": "qwythos-eval",
+      "dialog": [
+        0,
+        1
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "test_id": "sample-03",
+        "kind": "sample_generation",
+        "category": "cyber",
+        "declared_rounds": null,
+        "duration_s": null,
+        "tools_used": [],
+        "source_repo": "empero-ai/Qwythos-9B-Claude-Mythos-5-1M",
+        "source_file": "evals/sample_generations.md"
+      },
+      "encoding": "json"
+    }
+  ]
+}
