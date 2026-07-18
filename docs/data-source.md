@@ -68,10 +68,29 @@ print(pq.read_table(p).num_rows, "rows")
 PY
 ```
 
-**Status in this repo:** not yet consumed — access to the gate was still pending
-at last check. A structured parser for this shape can be added under
-`src/vcon_trajectories/` once access is granted; the existing `convert.py`
-(Trajectory → vCon) is source-agnostic and can be reused directly.
+**Status in this repo:** a structured parser/converter for this dataset lives in
+[`src/vcon_trajectories/mythos.py`](../src/vcon_trajectories/mythos.py). With an
+authorized token it downloads the parquet and emits one vCon 0.4.0 per row
+(verified: **65/65 valid**, 216/216 content atoms preserved verbatim — a lossless
+mapping, with a *real* per-record `created_at`):
+
+```python
+import json, os
+from vcon_trajectories.mythos import load_records, record_to_vcon
+from vcon_trajectories.validate import make_validator, validate_vcon
+os.makedirs("out_mythos", exist_ok=True)
+v = make_validator()
+for rec in load_records():          # needs HF_TOKEN for an authorized account
+    vc = record_to_vcon(rec)
+    assert validate_vcon(vc, v) == []
+    json.dump(vc, open(f"out_mythos/{rec['id']}.vcon.json", "w"), indent=2, ensure_ascii=False)
+```
+
+> ⚠️ **Publication note:** this dataset is **gated**. Its raw parquet and the
+> vCons derived from it are **git-ignored** on purpose (`data/mythos_agent/`,
+> `out_mythos/`) so gated content is not republished through this public repo.
+> Publishing them is a deliberate decision for the repo owner, mindful of the
+> dataset's gate and CC-BY-4.0 attribution terms.
 
 The primary, reproducible demo uses the **public** Qwythos eval logs above so it
 runs with no auth.
