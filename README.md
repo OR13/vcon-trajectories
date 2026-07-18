@@ -42,6 +42,21 @@ dataset, the gated [`VINAY-UMRETHE/Mythos-Agent`](https://huggingface.co/dataset
 (CC-BY-4.0) — note that is *not* the Qwythos model's training data, just another
 "mythos"-named artifact.
 
+## A publishable example
+
+Because the `VINAY-UMRETHE/Mythos-Agent` dataset is gated, the vCons derived from
+it are git-ignored (not republished here). Instead,
+[`examples/mythos_agent_sample.vcon.json`](examples/mythos_agent_sample.vcon.json)
+is a **publishable** vCon built from a synthetic record
+([`examples/mythos_agent_sample_record.json`](examples/mythos_agent_sample_record.json))
+that uses the dataset's *exact schema* and the *same* `mythos.record_to_vcon`
+converter. It is structurally identical to the gated-derived vCons (verified in
+tests) but contains only original, shareable content.
+
+```bash
+PYTHONPATH=src python examples/generate_sample.py   # regenerate + validate the sample
+```
+
 ## Validation
 
 Primary validation is against the **authoritative JSON Schema** shipped in

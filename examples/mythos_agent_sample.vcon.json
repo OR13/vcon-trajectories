@@ -1,0 +1,162 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "1fe380b5-b078-8b55-b4fe-5044f9aa6b48",
+  "created_at": "2026-07-18T00:00:00Z",
+  "subject": "[task.tool_use] What did the IETF vCon working group publish about a conversation data container",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "mythos-preview"
+    },
+    {
+      "type": "bot",
+      "name": "web_search"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "mediatype": "text/plain",
+      "body": "What did the IETF vCon working group publish about a conversation data container? Search and summarize.",
+      "encoding": "none",
+      "start": "2026-07-18T00:00:00Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "mediatype": "text/plain",
+      "body": "That depends on the group's current drafts rather than anything fixed in my memory, so let me retrieve it before answering.",
+      "encoding": "none",
+      "start": "2026-07-18T00:00:01Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        2
+      ],
+      "originator": 1,
+      "application": "web_search",
+      "mediatype": "application/json",
+      "body": {
+        "id": "toolu_example_1",
+        "name": "web_search",
+        "input": {
+          "query": "IETF vCon working group conversation data container draft"
+        }
+      },
+      "encoding": "json",
+      "start": "2026-07-18T00:00:02Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        1
+      ],
+      "originator": 2,
+      "application": "web_search",
+      "mediatype": "application/json",
+      "body": {
+        "tool_use_id": "toolu_example_1",
+        "content": "[{\"title\": \"The JSON format for vCon - Conversation Data Container\", \"url\": \"https://datatracker.ietf.org/doc/draft-ietf-vcon-vcon-core/\", \"snippet\": \"Defines the vCon JSON container (version 0.4.0) for capturing conversations: parties, dialog, analysis, and attachments.\"}]",
+        "is_error": false
+      },
+      "encoding": "json",
+      "start": "2026-07-18T00:00:03Z"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "mediatype": "text/plain",
+      "body": "The IETF vCon working group's core draft, draft-ietf-vcon-vcon-core, defines a JSON \"conversation data container\" (currently version 0.4.0). A vCon bundles the participants (parties), the exchanged content (dialog), derived results such as transcripts or summaries (analysis), and ancillary documents (attachments) into one signed-and-verifiable object.\n\nSource: https://datatracker.ietf.org/doc/draft-ietf-vcon-vcon-core/",
+      "encoding": "none",
+      "start": "2026-07-18T00:00:04Z"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "VINAY-UMRETHE/Mythos-Agent",
+      "product": "mythos-preview",
+      "schema": "mythos-agent-metadata",
+      "dialog": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "category": "task.tool_use",
+        "slug": "example_vcon_search_01",
+        "domain": "task",
+        "tone": "methodical",
+        "intensity": "medium",
+        "length_class": "medium",
+        "uses_tools": true,
+        "turn_count": 5,
+        "id": "mythos_example_0001",
+        "model_target": "mythos-preview",
+        "schema_version": "1.0",
+        "dataset_created_at": "2026-07-18T00:00:00Z"
+      },
+      "encoding": "json"
+    }
+  ],
+  "attachments": [
+    {
+      "purpose": "system-prompt",
+      "start": "2026-07-18T00:00:00Z",
+      "party": 1,
+      "dialog": 0,
+      "mediatype": "text/plain",
+      "body": "You are Mythos, an experimental research assistant. You reason step by step, retrieve current information with tools when a question depends on external facts, cite your sources, and clearly separate what you retrieved from what you already knew.",
+      "encoding": "none"
+    },
+    {
+      "purpose": "tool-definitions",
+      "start": "2026-07-18T00:00:00Z",
+      "party": 1,
+      "dialog": 0,
+      "mediatype": "application/json",
+      "body": [
+        {
+          "name": "web_search",
+          "description": "Search the web for current information, documents, and real-time data.",
+          "input_schema": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "description": "The search query string."
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      ],
+      "encoding": "json"
+    }
+  ]
+}

@@ -105,6 +105,28 @@ def test_deterministic_uuid_is_v8_and_stable():
     assert u1[14] == "8"  # version nibble
 
 
+def test_mythos_sample_is_valid_and_compatible(validator):
+    """The publishable synthetic sample uses the gated dataset's schema and the
+    same converter, so it must validate and carry the same vCon structure."""
+    from vcon_trajectories.mythos import record_to_vcon
+
+    with open(os.path.join(ROOT, "examples", "mythos_agent_sample_record.json"), encoding="utf-8") as f:
+        record = json.load(f)
+    vcon = record_to_vcon(record)
+    assert validate_vcon(vcon, validator) == []
+    assert vcon["vcon"] == "0.4.0"
+    # created_at is taken from the record (not synthesized)
+    assert vcon["created_at"] == "2026-07-18T00:00:00Z"
+    # tool trajectory: user -> assistant text -> tool_use -> tool_result -> answer
+    assert [d["originator"] for d in vcon["dialog"]] == [0, 1, 1, 2, 1]
+    assert vcon["parties"][2]["name"] == "web_search"
+    purposes = {a["purpose"] for a in vcon["attachments"]}
+    assert purposes == {"system-prompt", "tool-definitions"}
+    # the committed sample .vcon.json is up to date with the converter
+    with open(os.path.join(ROOT, "examples", "mythos_agent_sample.vcon.json"), encoding="utf-8") as f:
+        assert json.load(f) == vcon
+
+
 def test_negative_validation(validator):
     bad = {"vcon": "0.4.0", "uuid": "nope", "created_at": "someday",
            "dialog": [{"type": "chat", "start": "x"}]}
