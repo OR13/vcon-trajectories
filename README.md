@@ -205,6 +205,20 @@ out/      generated, schema-valid .vcon.json files
 tests/    pipeline + multi-source + convention tests (19)
 ```
 
+## Experimental (separate track): `agent_session` / VAC
+
+> Kept deliberately apart from the core mapping above. See
+> [`experiments/vac-agent-session/`](experiments/vac-agent-session/).
+
+A **prototype** maps the shared IR to the IETF `agent_session` vCon extension
+(`draft-howe-vcon-agent-session`) with an embedded **VAC** record
+(`draft-birkholz-verifiable-agent-conversations`). Both are **individual
+Internet-Drafts at `-00`, not adopted WG documents** — this is exploratory and
+does not affect the core deliverable. The prototype's outer vCons validate against
+the core schema/CDDL and the embedded VAC records validate against the VAC draft's
+own CDDL. It does **not** implement the signed (COSE_Sign1) form. Details, exact
+draft status, and mapping choices: [`experiments/vac-agent-session/SPEC.md`](experiments/vac-agent-session/SPEC.md).
+
 ## Caveats & scope
 
 - **Core only; two mappings are conventions.** Output targets vCon **0.4.0 core**.
