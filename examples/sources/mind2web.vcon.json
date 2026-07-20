@@ -1,0 +1,137 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "e089a961-d9aa-8440-97b1-8b97ace44058",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "Check for pickup restaurant available in Boston, NY on March 18, 5pm with just o",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "assistant"
+    },
+    {
+      "type": "bot",
+      "name": "environment"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "start": "2026-07-14T12:41:41Z",
+      "mediatype": "text/plain",
+      "body": "Check for pickup restaurant available in Boston, NY on March 18, 5pm with just one guest",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        1
+      ],
+      "originator": 2,
+      "start": "2026-07-14T12:41:42Z",
+      "mediatype": "text/plain",
+      "body": "<html backend_node_id=\"145\">\n  <body>\n    <div backend_node_id=\"589\">\n      <div backend_node_id=\"590\">\n        <div backend_node_id=\"597\">\n          <div backend_node_id=\"598\">\n            <a backend_node_id=\"600\">\n                <text backend_node_id=\"601\">Skip to main content</text>\n              </a>\n            <a backend_node_id=\"606\">\n                      <text backend_node_id=\"607\">Use Tock at your business</text>\n                    </a>\n                  <header backend_node_id=\"612\">\n              <div backend_node_id=\"614\">\n                  <a backend_node_id=\"617\" aria_label=\"Tock home page\"/>\n                  <div backend_node_id=\"625\">\n                    <button backend_node_id=\"626\" aria_label=\"Search\"/>\n                    <button backend_node_id=\"630\" aria_label=\"Menu\"/>\n                  </div>\n                </div>\n              <div backend_node_id=\"635\">\n                <div backend_node_id=\"636\">\n                  <div backend_node_id=\"638\">\n                    <a backend_node_id=\"639\" aria_label=\"Tock home page\"/>\n                    <button backend_node_id=\"647\" aria_label=\"Book a reservation. Toggle open a menu of reservation types\">\n                      <span backend_node_id=\"649\">\n                        <text backend_node_id=\"650\">Book a reservation</text>\n                      </span>\n                    </button>\n                    <button backend_node_id=\"654\" aria_label=\"Book a reservation. Toggle open a menu of reservation types\">\n                      <span backend_node_id=\"655\">\n                        <text backend_node_id=\"656\">Reservations</text>\n                      </span>\n                    </button>\n                  </div>\n                  <div backend_node_id=\"660\">\n                    <button backend_node_id=\"661\">\n                      <span backend_node_id=\"666\">\n                        <text backend_node_id=\"667\">Search</text>\n                      </span>\n                    </button>\n                    <button backend_node_id=\"668\" aria_label=\"Search\"/>\n                    <button backend_node_id=\"672\" aria_label=\"Toggle menu open\">\n                      <img backend_node_id=\"128\" alt=\"Profile image\"/>\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </header>\n            <main backend_node_id=\"675\">\n              <div backend_node_id=\"676\">\n                <div backend_node_id=\"677\">\n                  <div backend_node_id=\"134\">\n                    <div backend_node_id=\"678\">\n                      <div backend_node_id=\"679\">\n                        <p backend_node_id=\"680\">\n                          <text backend_node_id=\"681\">DELICIOUS</text>\n                        </p>\n                        <p backend_node_id=\"682\">\n                          <text backend_node_id=\"683\">STARTS</text>\n                        </p>\n                        <p backend_node_id=\"684\">\n                          <text backend_node_id=\"685\">HERE\n…[truncated for example; 38728 chars total]",
+      "encoding": "none",
+      "meta": {
+        "truncated": true,
+        "full_length": 38728
+      }
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        2
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:43Z",
+      "application": "SELECT",
+      "mediatype": "application/json",
+      "body": {
+        "action": "SELECT",
+        "input": {
+          "op": "SELECT",
+          "value": "Pickup",
+          "target": {
+            "tag": "select",
+            "backend_node_id": "136"
+          }
+        },
+        "repr": "[combobox]  Reservation type -> SELECT: Pickup"
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        1
+      ],
+      "originator": 2,
+      "start": "2026-07-14T12:41:44Z",
+      "mediatype": "text/plain",
+      "body": "<html backend_node_id=\"3119\">\n  <body>\n    <div backend_node_id=\"3563\">\n      <div backend_node_id=\"3564\">\n        <div backend_node_id=\"3571\">\n          <div backend_node_id=\"3572\">\n            <a backend_node_id=\"3574\">\n                <text backend_node_id=\"3575\">Skip to main content</text>\n              </a>\n            <a backend_node_id=\"3580\">\n                      <text backend_node_id=\"3581\">Use Tock at your business</text>\n                    </a>\n                  <header backend_node_id=\"3586\">\n              <div backend_node_id=\"3588\">\n                  <a backend_node_id=\"3591\" aria_label=\"Tock home page\"/>\n                  <div backend_node_id=\"3599\">\n                    <button backend_node_id=\"3600\" aria_label=\"Search\"/>\n                    <button backend_node_id=\"3604\" aria_label=\"Menu\"/>\n                  </div>\n                </div>\n              <div backend_node_id=\"3609\">\n                <div backend_node_id=\"3610\">\n                  <div backend_node_id=\"3612\">\n                    <a backend_node_id=\"3613\" aria_label=\"Tock home page\"/>\n                    <button backend_node_id=\"3621\" aria_label=\"Book a reservation. Toggle open a menu of reservation types\">\n                      <span backend_node_id=\"3623\">\n                        <text backend_node_id=\"3624\">Book a reservation</text>\n                      </span>\n                    </button>\n                    <button backend_node_id=\"3628\" aria_label=\"Book a reservation. Toggle open a menu of reservation types\">\n                      <span backend_node_id=\"3629\">\n                        <text backend_node_id=\"3630\">Reservations</text>\n                      </span>\n                    </button>\n                  </div>\n                  <div backend_node_id=\"3634\">\n                    <button backend_node_id=\"3635\">\n                      <span backend_node_id=\"3640\">\n                        <text backend_node_id=\"3641\">Search</text>\n                      </span>\n                    </button>\n                    <button backend_node_id=\"3642\" aria_label=\"Search\"/>\n                    <button backend_node_id=\"3646\" aria_label=\"Toggle menu open\">\n                      <img backend_node_id=\"3105\" alt=\"Profile image\"/>\n                    </button>\n                  </div>\n                </div>\n              </div>\n            </header>\n            <main backend_node_id=\"3649\">\n              <div backend_node_id=\"3650\">\n                <div backend_node_id=\"3651\">\n                  <div backend_node_id=\"3111\">\n                    <div backend_node_id=\"3652\">\n                      <div backend_node_id=\"3653\">\n                        <p backend_node_id=\"3654\">\n                          <text backend_node_id=\"3655\">DELICIOUS</text>\n                        </p>\n                        <p backend_node_id=\"3656\">\n                          <text backend_node_id=\"3657\">STARTS</text>\n                        </p>\n                        <p backend_node_id=\"3658\">\n               \n…[truncated for example; 36689 chars total]",
+      "encoding": "none",
+      "meta": {
+        "truncated": true,
+        "full_length": 36689
+      }
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        2
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:45Z",
+      "application": "CLICK",
+      "mediatype": "application/json",
+      "body": {
+        "action": "CLICK",
+        "input": {
+          "op": "CLICK",
+          "value": "",
+          "target": {
+            "tag": "svg",
+            "backend_node_id": "3113"
+          }
+        },
+        "repr": "[svg]   -> CLICK"
+      },
+      "encoding": "json"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "osunlp/Mind2Web",
+      "schema": "trajectory-metadata",
+      "dialog": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "website": "exploretock",
+        "domain": "Travel",
+        "subdomain": "Restaurant",
+        "source": "osunlp/Mind2Web",
+        "id": "7bda9645-0b5f-470a-8dd7-6af0bff4da68"
+      },
+      "encoding": "json"
+    }
+  ]
+}

@@ -55,7 +55,7 @@ def main() -> int:
     args = ap.parse_args()
 
     binary = gem_cddl_bin()
-    files = sorted({f for g in args.globs for f in glob.glob(g)})
+    files = sorted({f for g in args.globs for f in glob.glob(g, recursive=True)})
     if not files:
         sys.exit("no files matched")
 

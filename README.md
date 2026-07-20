@@ -57,6 +57,29 @@ tests) but contains only original, shareable content.
 PYTHONPATH=src python examples/generate_sample.py   # regenerate + validate the sample
 ```
 
+## Multi-source coverage
+
+Beyond the Mythos data, the repo maps **seven real, public agent-trajectory
+sources** into vCon 0.4.0 to exercise the whole [trajectory feature
+space](docs/trajectory-feature-space.md) — see [`docs/trajectory-sources.md`](docs/trajectory-sources.md)
+for the full coverage matrix. Each source has a small adapter
+([`src/vcon_trajectories/sources/`](src/vcon_trajectories/sources/)) that
+normalizes it into one shared representation, then a single converter emits vCon.
+
+| Source | Exercises |
+|--------|-----------|
+| sierra-research/tau-bench | user-simulator ↔ agent ↔ tools; **reward** labels |
+| nebius/SWE-rebench-openhands-trajectories | **long-horizon** code-exec; `resolved`/`exit_status`; reasoning |
+| trace-commons/agent-traces | **real per-turn timestamps**; **real tool errors** (`is_error`) |
+| NousResearch/hermes-function-calling-v1 | **parallel tool calls**; tool defs |
+| osunlp/Mind2Web | **GUI actions + DOM observations** |
+| liminghao1630/API-Bank | structured API calls; multi-user-turn |
+| Arize Phoenix / OpenInference | **telemetry span-tree** → flat dialog |
+
+A committed example vCon per source lives in [`examples/sources/`](examples/sources/)
+(with [`ATTRIBUTION.md`](examples/sources/ATTRIBUTION.md)); all are valid against
+both the JSON Schema and the CDDL. Regenerate: `python scripts/build_source_examples.py`.
+
 ## Validation
 
 Primary validation is against the **authoritative JSON Schema** shipped in
@@ -91,8 +114,11 @@ its own annotations, relaxes a few points to match real-world corpus practice.
 |-----|-------|--------|
 | Qwythos trajectories (`out/`, public) | 32 | **32/32 valid** |
 | Publishable sample (`examples/`, public) | 1 | **1/1 valid** |
+| Multi-source examples (`examples/sources/`, public) | 7 | **7/7 valid** |
 | Mythos-Agent dataset (`out_mythos/`, gated, local-only) | 65 | **65/65 valid** |
-| **Total** | **98** | **98/98 valid** |
+| **Total** | **105** | **105/105 valid** |
+
+Run over the public examples: `python scripts/cddl_validate.py "out/*.vcon.json" "examples/**/*.vcon.json"`.
 
 The check is meaningful, not vacuous — negative controls are rejected by the
 grammar: missing `created_at`, missing `parties`, a non-RFC-3339 `created_at`,

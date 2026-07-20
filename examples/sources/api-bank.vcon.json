@@ -1,0 +1,300 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "4d89dc08-e3a2-81f7-b1fd-9695574b070b",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "Can you add a schedule for me at 2pm on September 12th called \"Meeting with John",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "assistant"
+    },
+    {
+      "type": "bot",
+      "name": "GetUserToken"
+    },
+    {
+      "type": "bot",
+      "name": "AddAgenda"
+    },
+    {
+      "type": "bot",
+      "name": "AddAlarm"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "start": "2026-07-14T12:41:41Z",
+      "mediatype": "text/plain",
+      "body": "Can you add a schedule for me at 2pm on September 12th called \"Meeting with John\" at the office?",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:42Z",
+      "mediatype": "text/plain",
+      "body": "Sure, I can add that schedule for you. When would you like the alarm to remind you?",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "start": "2026-07-14T12:41:43Z",
+      "mediatype": "text/plain",
+      "body": "Can you remind me 10 minutes before the schedule?",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:44Z",
+      "mediatype": "text/plain",
+      "body": "Absolutely. To schedule the meeting, I first need to authenticate your account. Please provide your username, email, and password.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "start": "2026-07-14T12:41:45Z",
+      "mediatype": "text/plain",
+      "body": "My username is JaneSmith, my email is janesmith@example.com, and my password is password.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:46Z",
+      "mediatype": "text/plain",
+      "body": "Thank you.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        2
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:47Z",
+      "application": "GetUserToken",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "GetUserToken",
+        "input": {
+          "username": "JaneSmith",
+          "password": "password"
+        }
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        1
+      ],
+      "originator": 2,
+      "start": "2026-07-14T12:41:48Z",
+      "application": "GetUserToken",
+      "mediatype": "application/json",
+      "body": {
+        "content": {
+          "api_name": "GetUserToken",
+          "input": {
+            "username": "JaneSmith",
+            "password": "password"
+          },
+          "output": {
+            "token": "o8i7u6y5t4r3e2w1q0"
+          },
+          "exception": null
+        }
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:49Z",
+      "mediatype": "text/plain",
+      "body": "I have retrieved your authentication token. Now I will add the schedule and alarm for you.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        3
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:50Z",
+      "application": "AddAgenda",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "AddAgenda",
+        "input": {
+          "token": "o8i7u6y5t4r3e2w1q0",
+          "content": "Meeting with John at the office",
+          "time": "2023-09-12 14:00:00",
+          "location": "office"
+        }
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        3,
+        1
+      ],
+      "originator": 3,
+      "start": "2026-07-14T12:41:51Z",
+      "application": "AddAgenda",
+      "mediatype": "application/json",
+      "body": {
+        "content": {
+          "api_name": "AddAgenda",
+          "input": {
+            "token": "o8i7u6y5t4r3e2w1q0",
+            "content": "Meeting with John at the office",
+            "time": "2023-09-12 14:00:00",
+            "location": "office"
+          },
+          "output": "success",
+          "exception": null
+        }
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:52Z",
+      "mediatype": "text/plain",
+      "body": "I have added the schedule, and now I will set the alarm for you.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        4
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:53Z",
+      "application": "AddAlarm",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "AddAlarm",
+        "input": {
+          "token": "o8i7u6y5t4r3e2w1q0",
+          "time": "2023-09-12 13:50:00"
+        }
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        4,
+        1
+      ],
+      "originator": 4,
+      "start": "2026-07-14T12:41:54Z",
+      "application": "AddAlarm",
+      "mediatype": "application/json",
+      "body": {
+        "content": {
+          "api_name": "AddAlarm",
+          "input": {
+            "token": "o8i7u6y5t4r3e2w1q0",
+            "time": "2023-09-12 13:50:00"
+          },
+          "output": "success",
+          "exception": null
+        }
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:55Z",
+      "mediatype": "text/plain",
+      "body": "Your schedule and alarm have been successfully added.",
+      "encoding": "none"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "liminghao1630/API-Bank",
+      "schema": "trajectory-metadata",
+      "dialog": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "source": "liminghao1630/API-Bank",
+        "id": "AddAgenda-AddAlarm-GetUserToken-level-2-1"
+      },
+      "encoding": "json"
+    }
+  ]
+}

@@ -1,0 +1,155 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "443923f5-05cc-8e8c-9e90-90256a39732c",
+  "created_at": "2023-06-01T08:09:58Z",
+  "subject": "trace phoenix-random-6",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "environment"
+    },
+    {
+      "type": "bot",
+      "name": "assistant"
+    },
+    {
+      "type": "bot",
+      "name": "production-she-teach"
+    },
+    {
+      "type": "bot",
+      "name": "serve-say-up"
+    },
+    {
+      "type": "bot",
+      "name": "from-health-evening"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        1,
+        2
+      ],
+      "originator": 1,
+      "start": "2023-06-01T08:09:58Z",
+      "mediatype": "text/plain",
+      "body": "Value even drug hit sell.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        0
+      ],
+      "originator": 2,
+      "start": "2023-06-01T08:09:58Z",
+      "mediatype": "text/plain",
+      "body": "Provide stage have usually certain.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        3
+      ],
+      "originator": 2,
+      "start": "2023-06-01T08:19:56Z",
+      "application": "production-she-teach",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "production-she-teach",
+        "input": "Study against school rich sing growth matter rest."
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        0
+      ],
+      "originator": 2,
+      "start": "2023-06-01T08:25:51Z",
+      "mediatype": "text/plain",
+      "body": "Television physical item leader citizen.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        4
+      ],
+      "originator": 2,
+      "start": "2023-08-16T23:27:39Z",
+      "application": "serve-say-up",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "serve-say-up",
+        "input": {
+          "free": "cwUcUlyGWMZRrslBmUZe",
+          "major": 6569,
+          "feel": "QyrjbiXIoTHfFWwHBObQ",
+          "worry": -25258317.2845961,
+          "inside": 2447,
+          "huge": 1505,
+          "trouble": "oWiaRTFNCFhJkoGlyVuw",
+          "they": -150518237.50015
+        }
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        5
+      ],
+      "originator": 2,
+      "start": "2023-08-16T23:35:53Z",
+      "application": "from-health-evening",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "from-health-evening",
+        "input": {
+          "certain": "jjwDHbxUwYWqOKagMshX",
+          "put": 6882.56397955058,
+          "dark": 2308,
+          "debate": 8045,
+          "finish": -1651995313.18114,
+          "information": 8119
+        }
+      },
+      "encoding": "json"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "arize-ai/openinference",
+      "schema": "trajectory-metadata",
+      "dialog": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "source": "arize-ai/openinference",
+        "id": "phoenix-random-6"
+      },
+      "encoding": "json"
+    }
+  ]
+}

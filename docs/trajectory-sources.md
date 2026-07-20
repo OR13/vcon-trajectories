@@ -29,6 +29,20 @@ corpora (SWE-agent, OpenHands, tau-bench, OpenInference exports, …) into vCon
 → **Decision point:** align our output to the `agent_session`/VAC shape, or keep
 the current core-only mapping. (See README follow-ups.)
 
+## Status: all 7 wired up ✅
+
+All seven public sources below now have working adapters
+(`src/vcon_trajectories/sources/adapters.py`) that normalize each into a shared
+intermediate representation (`ir.py`) and through one converter to vCon 0.4.0
+core. A committed example vCon per source lives in
+[`examples/sources/`](../examples/sources/) (see its `ATTRIBUTION.md`); each is
+valid against **both** the JSON Schema and the CDDL grammar. Rare features were
+verified present in real output: parallel tool calls (Hermes), real per-turn
+timestamps + real tool errors (agent-traces), reasoning→`analysis` (SWE-rebench
+`think`), reward/`resolved` outcomes (tau-bench / SWE-rebench), GUI action+
+observation (Mind2Web), span-tree flattening (OpenInference). Regenerate with
+`python scripts/build_source_examples.py`.
+
 ## Recommended minimal corpus (public-first)
 
 Each row is the *owner* of at least one rare feature; together they span the space.
