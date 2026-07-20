@@ -1,14 +1,38 @@
 # vcon-trajectories
 
-**Can "mythos" agent trajectories from Hugging Face be represented as IETF vCons?**
-Yes. This repo converts real, publicly-available Mythos-model agent trajectories
-into [IETF vCon](https://datatracker.ietf.org/group/vcon/documents/) containers
+**Can real agent trajectories be represented as IETF vCons?** Yes. This repo
+started by converting "mythos" model trajectories and now maps **eight real,
+public agent-trajectory sources** (plus one gated dataset) into
+[IETF vCon](https://datatracker.ietf.org/group/vcon/documents/) containers
 (`draft-ietf-vcon-vcon-core-03`, container version **0.4.0**) and validates every
-one of them against the draft's official JSON Schema.
+one against both the draft's **JSON Schema** and a **CDDL** grammar.
 
 ```
-32/32 trajectories valid against the vCon JSON Schema (v0.4.0), 106 dialog entries.
+43/43 public vCons valid against the vCon JSON Schema (v0.4.0) AND the CDDL grammar.
 ```
+
+## Scope — what's covered
+
+- **Target:** vCon **0.4.0 core** (`draft-ietf-vcon-vcon-core-03`) — parties,
+  dialog, analysis, attachments. **Not** the (draft) `agent_session`/VAC
+  extension (see [caveats](#caveats--scope)).
+- **Sources:** the Qwythos Mythos eval logs + 7 public trajectory datasets
+  (coding, tool-use, web/GUI, telemetry) + a publishable synthetic sample + the
+  gated `VINAY-UMRETHE/Mythos-Agent`. See the coverage matrix in
+  [`docs/trajectory-sources.md`](docs/trajectory-sources.md) and the feature
+  rubric in [`docs/trajectory-feature-space.md`](docs/trajectory-feature-space.md).
+- **Feature coverage:** multi-turn & long-horizon, multi-agent, tool calls +
+  results + **parallel** calls + **errors**, reasoning/chain-of-thought,
+  reward/outcome labels, **real per-turn timestamps**, GUI action+observation,
+  telemetry span-trees, and **binary/external** content.
+- **Validation:** JSON Schema (with `uuid`/`date-time` format checks) **and** CDDL
+  (Ruby `cddl` gem). Negative controls are rejected.
+- **Two mappings are conventions, not standard.** Agent **handoff → `transfer`**
+  and **aborted run → `incomplete`/`disposition`** reuse telephony constructs;
+  these are clearly labeled as *this project's* interpretation, **not** an
+  IETF-defined mapping — see [`docs/conventions.md`](docs/conventions.md) and
+  [`examples/conventions/`](examples/conventions/) (each such vCon embeds the
+  disclaimer inline).
 
 ## What this demonstrates
 
@@ -80,6 +104,21 @@ A committed example vCon per source lives in [`examples/sources/`](examples/sour
 (with [`ATTRIBUTION.md`](examples/sources/ATTRIBUTION.md)); all are valid against
 both the JSON Schema and the CDDL. Regenerate: `python scripts/build_source_examples.py`.
 
+### Convention demonstrators (non-standard mappings — clearly labeled)
+
+Three rarer features are shown in [`examples/conventions/`](examples/conventions/).
+Two of them **reuse vCon telephony constructs** and are **conventions of this
+project, not IETF-defined mappings** — each vCon embeds the disclaimer inline and
+[`docs/conventions.md`](docs/conventions.md) draws the standard-vs-convention line:
+
+| Feature | vCon construct | Standard? | Data |
+|---|---|---|---|
+| agent → agent handoff | `dialog.type:"transfer"` | **convention** | real (Who&When / Magentic-One) |
+| aborted / failed run leg | `dialog.type:"incomplete"` + `disposition` | **convention** | synthetic |
+| large / binary content | external `url`+`content_hash`, `base64url` | standard (illustrative data) | real DOM + placeholder image |
+
+Regenerate: `python scripts/build_convention_examples.py`.
+
 ## Validation
 
 Primary validation is against the **authoritative JSON Schema** shipped in
@@ -115,10 +154,11 @@ its own annotations, relaxes a few points to match real-world corpus practice.
 | Qwythos trajectories (`out/`, public) | 32 | **32/32 valid** |
 | Publishable sample (`examples/`, public) | 1 | **1/1 valid** |
 | Multi-source examples (`examples/sources/`, public) | 7 | **7/7 valid** |
+| Convention demonstrators (`examples/conventions/`, public) | 3 | **3/3 valid** |
 | Mythos-Agent dataset (`out_mythos/`, gated, local-only) | 65 | **65/65 valid** |
-| **Total** | **105** | **105/105 valid** |
+| **Total** | **108** | **108/108 valid** |
 
-Run over the public examples: `python scripts/cddl_validate.py "out/*.vcon.json" "examples/**/*.vcon.json"`.
+Run over the public examples: `python scripts/cddl_validate.py "out/*.vcon.json" "examples/**/*.vcon.json"` (43/43).
 
 The check is meaningful, not vacuous — negative controls are rejected by the
 grammar: missing `created_at`, missing `parties`, a non-RFC-3339 `created_at`,
@@ -151,30 +191,39 @@ PYTHONPATH=src pytest
 ```
 schema/   vCon JSON Schema (Appendix B), vcon.cddl grammar, + core-03 draft text
 data/     vendored Qwythos eval logs (the trajectories)
-docs/     spec notes, the trajectory→vCon mapping, and data-source instructions
-examples/ publishable sample record + its generated vCon
-scripts/  cddl_validate.py — batch CDDL validation via the Ruby cddl gem
+docs/     spec notes, mapping, feature-space rubric, source catalog, conventions
+examples/ publishable sample; sources/ (7 per-source vCons); conventions/ (3)
+scripts/  cddl_validate.py, build_source_examples.py, build_convention_examples.py
 src/vcon_trajectories/
-          parse.py    eval markdown → Trajectory objects (truncation-tolerant)
-          convert.py  Trajectory → vCon 0.4.0 dict
+          parse.py    Qwythos eval markdown → Trajectory objects (tolerant)
+          convert.py  Trajectory → vCon 0.4.0 dict (+ uuid/timestamp helpers)
           mythos.py   VINAY-UMRETHE/Mythos-Agent (gated) → vCon 0.4.0
+          sources/    ir.py (shared IR + converter) + adapters.py (8 adapters)
           validate.py jsonschema validation + python-vcon cross-check
-          __main__.py the end-to-end pipeline / CLI
+          __main__.py the end-to-end Qwythos pipeline / CLI
 out/      generated, schema-valid .vcon.json files
-tests/    pipeline tests
+tests/    pipeline + multi-source + convention tests (19)
 ```
 
 ## Caveats & scope
 
-- **Timestamps** are synthesized. The eval logs preserve message *order* and
-  content but not per-message wall-clock time; `created_at` uses the source
-  repo's `lastModified` and each `dialog.start` is a monotonic offset. See
-  `docs/mapping.md`.
-- **Truncated JSON**: a few tool-call arguments / results are truncated in the
-  source logs. The parser preserves the raw string (`_raw_arguments` /
-  `_raw_result`) rather than dropping the turn; the vCon stays schema-valid.
-- **UUIDs** are deterministic (derived from the source identity) so re-running
-  yields stable, diff-friendly output; version bits mark them UUIDv8 as the
-  draft recommends.
-- This targets the **core** container only. The adopted WG extensions
+- **Core only; two mappings are conventions.** Output targets vCon **0.4.0 core**.
+  This is **not** the (draft) `agent_session` / Verifiable Agent Conversations
+  extension — the IETF's purpose-built target for agent traces (see
+  [`docs/trajectory-sources.md`](docs/trajectory-sources.md)). The **handoff →
+  `transfer`** and **aborted-run → `incomplete`** mappings reuse telephony
+  constructs and are **this project's convention, not IETF-endorsed**
+  ([`docs/conventions.md`](docs/conventions.md)). The adopted WG extensions
   (contact-center, privacy-primer) are noted in the spec notes but not exercised.
+- **Timestamps.** Some sources carry **real** per-turn timestamps (agent-traces,
+  OpenInference, Mythos-Agent `created_at`); where a source has none, message
+  *order* is preserved and `dialog.start` is a synthesized monotonic offset.
+- **Truncated JSON** in the Qwythos logs is preserved raw (`_raw_arguments` /
+  `_raw_result`) rather than dropped; the vCon stays valid.
+- **UUIDs** are deterministic (hash of source identity) for diff-friendly output;
+  version bits mark them UUIDv8 as the draft recommends.
+- **Illustrative data** in `examples/conventions/external-and-binary-content.vcon.json`:
+  the external `url` does not dereference to the hashed bytes (the `content_hash`
+  is a real SHA-512) and the image is a placeholder — labeled inline.
+- **Fidelity.** The Mythos-Agent mapping is lossless (verified content round-trip);
+  per-source example vCons may be sliced for size (noted in their `analysis`).

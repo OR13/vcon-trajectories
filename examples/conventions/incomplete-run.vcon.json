@@ -1,0 +1,102 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "86917780-e701-8171-9945-82926465b365",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "Aborted agent run (synthetic demonstrator)",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "assistant"
+    },
+    {
+      "type": "bot",
+      "name": "bash"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "start": "2026-07-14T12:41:41Z",
+      "mediatype": "text/plain",
+      "body": "Summarize the failing test and fix it.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:42Z",
+      "mediatype": "text/plain",
+      "body": "I'll run the test suite first.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        2
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:43Z",
+      "application": "bash",
+      "mediatype": "application/json",
+      "body": {
+        "tool": "bash",
+        "input": {
+          "command": "pytest -x"
+        }
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "incomplete",
+      "start": "2026-07-14T12:41:44Z",
+      "disposition": "failed"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "vcon-trajectories/synthetic",
+      "schema": "trajectory-metadata",
+      "dialog": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "source": "vcon-trajectories/synthetic",
+        "id": "incomplete-demo-1"
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "report",
+      "vendor": "vcon-trajectories",
+      "schema": "mapping-note",
+      "dialog": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mediatype": "text/plain",
+      "body": "NON-STANDARD MAPPING and SYNTHETIC DATA. This trajectory was aborted before the `bash` tool call returned; the aborted leg is represented with vCon's `incomplete` dialog type and disposition \"failed\". vCon `incomplete`/`disposition` are defined by draft-ietf-vcon-vcon-core for TELEPHONY calls that did not connect (no-answer/busy/congestion/failed/hung-up/voicemail-no-message); \"failed\" is the only enum value that reasonably fits an aborted agent run. Reusing this construct for agent trajectories is a convention of the vcon-trajectories project, NOT an IETF-defined mapping. This record is synthetic. See docs/conventions.md.",
+      "encoding": "none"
+    }
+  ]
+}

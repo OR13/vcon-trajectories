@@ -1,0 +1,103 @@
+{
+  "vcon": "0.4.0",
+  "uuid": "32e849ed-55c9-8894-83ce-2b1738fa1a67",
+  "created_at": "2026-07-14T12:41:41Z",
+  "subject": "Large DOM as external content + a screenshot as base64url (illustrative)",
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "assistant"
+    },
+    {
+      "type": "bot",
+      "name": "environment"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "parties": [
+        0,
+        1
+      ],
+      "originator": 0,
+      "start": "2026-07-14T12:41:41Z",
+      "mediatype": "text/plain",
+      "body": "Book a table on this page.",
+      "encoding": "none"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        1
+      ],
+      "originator": 2,
+      "start": "2026-07-14T12:41:42Z",
+      "url": "https://example.invalid/mind2web/dom/action-0.html",
+      "content_hash": "sha512-oSDCFT7vvlKveZyDQF_pl7FVAxmOZWH44GMGP0Mf1KE-hokf7KZjwRbroKMEjnPZyRxt5r2g6Bg2wTfBoQPftw",
+      "mediatype": "text/html"
+    },
+    {
+      "type": "text",
+      "parties": [
+        2,
+        1
+      ],
+      "originator": 2,
+      "start": "2026-07-14T12:41:43Z",
+      "mediatype": "image/png",
+      "body": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAACklEQVR4nGMAAQAABQABDQottAAAAABJRU5ErkJggg",
+      "encoding": "base64url"
+    },
+    {
+      "type": "text",
+      "parties": [
+        1,
+        0
+      ],
+      "originator": 1,
+      "start": "2026-07-14T12:41:44Z",
+      "mediatype": "text/plain",
+      "body": "I can see the reservation form; clicking Book.",
+      "encoding": "none"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "osunlp/Mind2Web",
+      "schema": "trajectory-metadata",
+      "dialog": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mediatype": "application/json",
+      "body": {
+        "source": "osunlp/Mind2Web",
+        "id": "external-binary-demo-1"
+      },
+      "encoding": "json"
+    },
+    {
+      "type": "report",
+      "vendor": "vcon-trajectories",
+      "schema": "mapping-note",
+      "dialog": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mediatype": "text/plain",
+      "body": "STANDARD vCon MECHANISMS, ILLUSTRATIVE DATA. A large web DOM (real bytes from osunlp/Mind2Web) is represented as EXTERNAL content via `url` + `content_hash` (dereferenced content), and a binary screenshot artifact via `encoding`:\"base64url\" — both are standard, spec-defined vCon content mechanisms. Caveats: the `url` is ILLUSTRATIVE and does not dereference to the hashed bytes (the `content_hash` is a real SHA-512 of the included DOM); the PNG is a placeholder 1x1 image. See docs/conventions.md.",
+      "encoding": "none"
+    }
+  ]
+}

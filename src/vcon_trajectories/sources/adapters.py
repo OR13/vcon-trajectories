@@ -10,7 +10,7 @@ import re
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from .ir import (ACTION, MESSAGE, OBSERVATION, REASONING, TOOL_CALL,
+from .ir import (ACTION, HANDOFF, MESSAGE, OBSERVATION, REASONING, TOOL_CALL,
                  TOOL_RESULT, Turn, UTrajectory)
 
 
@@ -251,6 +251,51 @@ def api_bank(turn_dicts: List[Dict[str, Any]], traj_id: str) -> UTrajectory:
         id=traj_id,
         subject=_first_user_text(turns),
         turns=turns,
+    )
+
+
+_WW_HANDOFF_RE = re.compile(r"^(.+?)\s*\(->\s*(.+?)\)\s*$")
+_WW_THOUGHT_RE = re.compile(r"^(.+?)\s*\(thought\)\s*$")
+
+
+def who_and_when(rec: Dict[str, Any]) -> UTrajectory:
+    """Kevin355/Who_and_When (Magentic-One multi-agent logs). Roles encode the
+    speaking agent and delegations, e.g. `Orchestrator (-> WebSurfer)`.
+
+    NOTE: agent->agent delegations are emitted as HANDOFF turns, which the
+    converter maps onto vCon's `transfer` dialog type BY CONVENTION (not an
+    IETF-defined mapping). See docs/conventions.md.
+    """
+    turns: List[Turn] = []
+    for h in rec.get("history", []):
+        role = (h.get("role") or "").strip()
+        content = h.get("content") or ""
+        if role in ("human", "user"):
+            if content.strip():
+                turns.append(Turn(MESSAGE, "user", role="user", text=content))
+            continue
+        mo = _WW_HANDOFF_RE.match(role)
+        if mo:
+            frm, to = mo.group(1).strip(), mo.group(2).strip()
+            if content.strip():
+                turns.append(Turn(MESSAGE, frm, role="agent", text=content))
+            turns.append(Turn(HANDOFF, frm, role="agent", handoff_to=to))
+            continue
+        mt = _WW_THOUGHT_RE.match(role)
+        if mt:
+            turns.append(Turn(REASONING, mt.group(1).strip(), role="agent", text=content))
+            continue
+        turns.append(Turn(MESSAGE, role or "assistant", role="agent", text=content))
+    return UTrajectory(
+        source="Kevin355/Who_and_When",
+        id=rec.get("question_ID") or "",
+        subject=_excerpt(rec.get("question")),
+        turns=turns,
+        outcome={"mistake_agent": rec.get("mistake_agent"),
+                 "mistake_step": rec.get("mistake_step"),
+                 "is_corrected": rec.get("is_corrected")},
+        metadata={"mistake_reason": rec.get("mistake_reason"),
+                  "mistake_type": rec.get("mistake_type")},
     )
 
 

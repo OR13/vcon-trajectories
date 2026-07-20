@@ -17,6 +17,8 @@ offset from `created_at` is synthesized.
 """
 from __future__ import annotations
 
+import base64
+import hashlib
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
@@ -30,6 +32,20 @@ TOOL_RESULT = "tool_result"
 REASONING = "reasoning"
 ACTION = "action"           # GUI/environment action taken by the agent
 OBSERVATION = "observation"  # environment state returned to the agent
+# The two below reuse vCon telephony dialog types by CONVENTION (see docs/conventions.md);
+# they are NOT IETF-defined mappings for agent trajectories.
+HANDOFF = "handoff"          # agent->agent delegation -> vCon `transfer` dialog (convention)
+INCOMPLETE = "incomplete"    # aborted/failed leg     -> vCon `incomplete` dialog (convention)
+
+
+def content_hash_sri(data: bytes) -> str:
+    """W3C-SRI-style content hash accepted by vCon `content_hash` (sha512)."""
+    digest = base64.urlsafe_b64encode(hashlib.sha512(data).digest()).decode().rstrip("=")
+    return f"sha512-{digest}"
+
+
+def to_base64url(data: bytes) -> str:
+    return base64.urlsafe_b64encode(data).decode().rstrip("=")
 
 
 @dataclass
@@ -44,6 +60,14 @@ class Turn:
     is_error: bool = False
     timestamp: Optional[str] = None  # RFC3339, if the source carries one
     meta: Dict[str, Any] = field(default_factory=dict)
+    # HANDOFF / INCOMPLETE support (convention mappings)
+    handoff_to: Optional[str] = None     # target agent for a HANDOFF turn
+    disposition: Optional[str] = None    # vCon disposition enum for an INCOMPLETE turn
+    # External / binary content (standard vCon dereferenced/base64url content)
+    url: Optional[str] = None
+    content_hash: Optional[str] = None
+    binary: Optional[bytes] = None
+    mediatype: Optional[str] = None
 
 
 @dataclass
@@ -61,6 +85,20 @@ class UTrajectory:
 
 def _person_or_bot(role: str) -> str:
     return "person" if role == "user" else "bot"
+
+
+def _content_fields(turn: "Turn", text: Optional[str]) -> Dict[str, Any]:
+    """Standard vCon content fields: external (url+content_hash), inline binary
+    (base64url), or inline text (none)."""
+    if turn.url and turn.content_hash:
+        f = {"url": turn.url, "content_hash": turn.content_hash}
+        if turn.mediatype:
+            f["mediatype"] = turn.mediatype
+        return f
+    if turn.binary is not None:
+        return {"mediatype": turn.mediatype or "application/octet-stream",
+                "body": to_base64url(turn.binary), "encoding": "base64url"}
+    return {"mediatype": turn.mediatype or "text/plain", "body": text or "", "encoding": "none"}
 
 
 def _base_time(ut: UTrajectory) -> datetime:
@@ -134,6 +172,24 @@ def utrajectory_to_vcon(ut: UTrajectory) -> Dict[str, Any]:
                 pending_reasoning.append(turn.text)
             continue
 
+        if turn.kind == HANDOFF:
+            # CONVENTION: agent->agent handoff mapped onto vCon's `transfer` dialog.
+            frm = assistant_index(turn.actor)
+            to = assistant_index(turn.handoff_to or "agent")
+            prev = len(dialog) - 1
+            kw = {"type": "transfer", "start": start_for(turn),
+                  "transferor": frm, "transferee": user_idx, "transfer_target": to}
+            if prev >= 0:
+                kw["original"] = [prev]
+            add_dialog(**kw)
+            continue
+
+        if turn.kind == INCOMPLETE:
+            # CONVENTION: aborted/failed leg mapped onto vCon's `incomplete` dialog.
+            add_dialog(type="incomplete", start=start_for(turn),
+                       disposition=turn.disposition or "failed")
+            continue
+
         if turn.kind == TOOL_CALL:
             a = assistant_index(turn.actor if turn.role == "agent" else "assistant")
             t = party(turn.tool_name or "tool", "tool")
@@ -168,11 +224,8 @@ def utrajectory_to_vcon(ut: UTrajectory) -> Dict[str, Any]:
         elif turn.kind == OBSERVATION:
             env = party("environment", "environment")
             a = primary_assistant[0] if primary_assistant[0] is not None else assistant_index("assistant")
-            add_dialog(
-                type="text", parties=[env, a], originator=env,
-                start=start_for(turn), mediatype="text/plain",
-                body=turn.text or "", encoding="none",
-            )
+            add_dialog(type="text", parties=[env, a], originator=env,
+                       start=start_for(turn), **_content_fields(turn, turn.text))
         else:  # MESSAGE
             if turn.role == "user":
                 o = user_idx
@@ -180,11 +233,8 @@ def utrajectory_to_vcon(ut: UTrajectory) -> Dict[str, Any]:
             else:
                 o = assistant_index(turn.actor if turn.role == "agent" else "assistant")
                 other = user_idx
-            add_dialog(
-                type="text", parties=[o, other], originator=o,
-                start=start_for(turn), mediatype="text/plain",
-                body=turn.text or "", encoding="none",
-            )
+            add_dialog(type="text", parties=[o, other], originator=o,
+                       start=start_for(turn), **_content_fields(turn, turn.text))
 
     # Flush any trailing reasoning onto the last dialog entry.
     if pending_reasoning and dialog:

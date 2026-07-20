@@ -101,6 +101,68 @@ def test_agent_traces_preserves_real_timestamps():
     assert len(errs) == 1  # real tool error captured
 
 
+CONV_EXAMPLES = sorted(glob.glob(os.path.join(ROOT, "examples", "conventions", "*.vcon.json")))
+
+
+def test_committed_convention_examples_valid_and_disclosed(validator):
+    assert CONV_EXAMPLES, "no convention examples found"
+    for path in CONV_EXAMPLES:
+        vcon = json.load(open(path, encoding="utf-8"))
+        assert validate_vcon(vcon, validator) == [], f"{os.path.basename(path)}: invalid"
+        # every convention demonstrator must carry the honest mapping-note
+        notes = [a for a in vcon["analysis"] if a.get("schema") == "mapping-note"]
+        assert notes, f"{os.path.basename(path)} missing mapping-note disclaimer"
+
+
+def test_handoff_becomes_transfer_dialog():
+    from vcon_trajectories.sources.adapters import who_and_when
+    rec = {"question_ID": "q1", "question": "do research", "history": [
+        {"role": "human", "content": "research fast radio bursts"},
+        {"role": "Orchestrator (-> WebSurfer)", "content": "WebSurfer, search arxiv"},
+        {"role": "WebSurfer", "content": "found 3 papers"},
+    ]}
+    vcon = utrajectory_to_vcon(who_and_when(rec))
+    transfers = [d for d in vcon["dialog"] if d["type"] == "transfer"]
+    assert len(transfers) == 1
+    t = transfers[0]
+    names = {i: p["name"] for i, p in enumerate(vcon["parties"])}
+    assert names[t["transferor"]] == "Orchestrator"
+    assert names[t["transfer_target"]] == "WebSurfer"
+    # transfer dialogs carry no inline content (per spec)
+    assert "body" not in t and "parties" not in t
+
+
+def test_incomplete_dialog_and_disposition():
+    from vcon_trajectories.sources.ir import (INCOMPLETE, TOOL_CALL, Turn,
+                                              UTrajectory)
+    ut = UTrajectory(source="synthetic", id="x", turns=[
+        Turn(TOOL_CALL, "assistant", role="assistant", tool_name="bash", tool_input={"c": "ls"}),
+        Turn(INCOMPLETE, "assistant", role="assistant", disposition="failed"),
+    ])
+    vcon = utrajectory_to_vcon(ut)
+    inc = [d for d in vcon["dialog"] if d["type"] == "incomplete"]
+    assert len(inc) == 1 and inc[0]["disposition"] == "failed"
+    assert "body" not in inc[0]
+
+
+def test_external_and_base64url_content():
+    from vcon_trajectories.sources.ir import (MESSAGE, OBSERVATION, Turn,
+                                              UTrajectory, content_hash_sri)
+    data = b"<html>big dom</html>"
+    ut = UTrajectory(source="synthetic", id="x", turns=[
+        Turn(MESSAGE, "user", role="user", text="go"),
+        Turn(OBSERVATION, "environment", role="environment",
+             url="https://example.invalid/a.html", content_hash=content_hash_sri(data),
+             mediatype="text/html"),
+        Turn(OBSERVATION, "environment", role="environment", binary=b"\x89PNG\x00", mediatype="image/png"),
+    ])
+    vcon = utrajectory_to_vcon(ut)
+    ext = [d for d in vcon["dialog"] if d.get("url")]
+    assert ext and ext[0]["content_hash"].startswith("sha512-") and "body" not in ext[0]
+    b64 = [d for d in vcon["dialog"] if d.get("encoding") == "base64url"]
+    assert b64 and b64[0]["mediatype"] == "image/png"
+
+
 def test_mind2web_actions_and_observations():
     rec = {"annotation_id": "a", "confirmed_task": "book a table", "website": "w",
            "domain": "d", "subdomain": "s",

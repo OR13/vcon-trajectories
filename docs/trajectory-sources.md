@@ -57,13 +57,18 @@ Each row is the *owner* of at least one rare feature; together they span the spa
 | F | **OpenInference / Phoenix fixtures** (`storage.googleapis.com/arize-phoenix-assets/traces/`) | Public GCS | JSONL + parquet | **nested span/subagent tree** (telemetry); `openinference.*`/`gen_ai.*` attrs; span `start_time`/`end_time` |
 | G | **osunlp/Mind2Web** | Public HF, **CC-BY-4.0** | JSON | **web/GUI actions+observations** (CLICK/TYPE/SELECT + text DOM); user goal; text-first (no screenshots needed) |
 
-### Rare-feature owners still needing heavier data or synthesis
-| Feature | Best real source | Note |
-|---|---|---|
-| Multi-agent + **handoff/transfer** (vCon `transfer`) | `ag2ai/Agents_Failure_Attribution` ("Who&When", 127 multi-agent systems) or self-generated AutoGen GroupChat | downloadable multi-agent failure logs; true `transfer` semantics may need adapter care |
-| **Multimodal/binary** (`base64url`) + **external artifact** (`url`+`content_hash`) | `osunlp/Multimodal-Mind2Web` or `OpenGVLab/GUI-Odyssey` (small slice) | heavy (GB, screenshots); take a tiny slice to exercise base64url / dereferenced content |
-| Genuinely conversational 2-party web | `McGill-NLP/WebLINX` (instructor/navigator) | maps beautifully to vCon parties but **CC-BY-NC-SA** (non-commercial) |
-| Explicit `incomplete` + `disposition` | approximate from D's `exit_status`/A's reward | a small **synthetic** fixture may be cleanest for the exact enum |
+### Rare-feature owners — now demonstrated in `examples/conventions/`
+These three earlier gaps are now shown (see [`docs/conventions.md`](conventions.md)
+— two are **conventions**, not standard mappings):
+
+| Feature | Source used | vCon construct | Standard? |
+|---|---|---|---|
+| Multi-agent + **handoff** | `Kevin355/Who_and_When` (real, Magentic-One) | `dialog.type:"transfer"` | **convention** |
+| **Aborted/failed run leg** | synthetic (labeled) | `dialog.type:"incomplete"` + `disposition` | **convention** |
+| **Binary** (`base64url`) + **external artifact** (`url`+`content_hash`) | real DOM (`osunlp/Mind2Web`) + placeholder image | standard content mechanisms | standard (illustrative data) |
+
+Still not exercised: genuinely conversational 2-party web (`McGill-NLP/WebLINX`,
+CC-BY-**NC**-SA), and heavy screenshot corpora at scale.
 
 ## Coverage matrix (corpus × feature)
 
