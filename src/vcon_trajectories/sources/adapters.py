@@ -10,8 +10,8 @@ import re
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
-from .ir import (ACTION, HANDOFF, MESSAGE, OBSERVATION, REASONING, TOOL_CALL,
-                 TOOL_RESULT, Turn, UTrajectory)
+from ..ir import (ACTION, HANDOFF, MESSAGE, OBSERVATION, REASONING, TOOL_CALL,
+                  TOOL_RESULT, Turn, UTrajectory)
 
 
 def _maybe_json(s: Any) -> Any:
@@ -56,6 +56,7 @@ def _openai_turns(messages: List[Dict[str, Any]]):
     """
     system: Optional[str] = None
     turns: List[Turn] = []
+    think_ids = set()  # `think` calls become reasoning; their (empty) results are dropped
     for m in messages or []:
         role = m.get("role")
         content = m.get("content")
@@ -74,51 +75,16 @@ def _openai_turns(messages: List[Dict[str, Any]]):
                 args = _maybe_json(fn.get("arguments"))
                 if name == "think":
                     thought = args.get("thought") if isinstance(args, dict) else str(args)
+                    think_ids.add(tc.get("id"))
                     turns.append(Turn(REASONING, "assistant", role="assistant", text=thought))
                 else:
                     turns.append(Turn(TOOL_CALL, "assistant", role="assistant",
-                                      tool_name=name, tool_input=args, meta={"id": tc.get("id")}))
-        elif role == "tool":
+                                      tool_name=name, tool_input=args, call_id=tc.get("id")))
+        elif role == "tool" and m.get("tool_call_id") not in think_ids:
             name = m.get("name") or "tool"
             turns.append(Turn(TOOL_RESULT, name, role="tool", tool_name=name,
-                              tool_result=_maybe_json(content), meta={"id": m.get("tool_call_id")}))
+                              tool_result=_maybe_json(content), call_id=m.get("tool_call_id")))
     return system, turns
-
-
-def _anthropic_turns(events: List[Dict[str, Any]]) -> List[Turn]:
-    """Native Anthropic-style events (`{type, timestamp, message:{role,content}}`)
-    where content is a string or a list of text/thinking/tool_use/tool_result blocks."""
-    turns: List[Turn] = []
-    tool_by_id: Dict[str, str] = {}
-    for e in events or []:
-        if e.get("type") not in ("user", "assistant"):
-            continue
-        ts = e.get("timestamp")
-        msg = e.get("message") or {}
-        role = msg.get("role") or e.get("type")
-        content = msg.get("content")
-        actor = "user" if role == "user" else "assistant"
-        if isinstance(content, str):
-            if content.strip():
-                turns.append(Turn(MESSAGE, actor, role=role, text=content, timestamp=ts))
-            continue
-        for b in content or []:
-            bt = b.get("type")
-            if bt == "text" and (b.get("text") or "").strip():
-                turns.append(Turn(MESSAGE, actor, role=role, text=b["text"], timestamp=ts))
-            elif bt == "thinking":
-                turns.append(Turn(REASONING, "assistant", role="assistant",
-                                  text=b.get("thinking") or b.get("text"), timestamp=ts))
-            elif bt == "tool_use":
-                tool_by_id[b.get("id")] = b.get("name")
-                turns.append(Turn(TOOL_CALL, "assistant", role="assistant", tool_name=b.get("name"),
-                                  tool_input=b.get("input"), timestamp=ts, meta={"id": b.get("id")}))
-            elif bt == "tool_result":
-                name = tool_by_id.get(b.get("tool_use_id"), "tool")
-                turns.append(Turn(TOOL_RESULT, name, role="tool", tool_name=name,
-                                  tool_result=b.get("content"), is_error=bool(b.get("is_error")),
-                                  timestamp=ts, meta={"id": b.get("tool_use_id")}))
-    return turns
 
 
 # --- adapters ----------------------------------------------------------------
@@ -144,25 +110,6 @@ def swe_rebench(rec: Dict[str, Any]) -> UTrajectory:
         turns=turns, system=system, tools=rec.get("tools"),
         outcome={"resolved": rec.get("resolved"), "exit_status": rec.get("exit_status")},
         metadata={"repo": rec.get("repo"), "instance_id": rec.get("instance_id")},
-    )
-
-
-def agent_traces(rec: Dict[str, Any]) -> UTrajectory:
-    turns = _anthropic_turns(rec.get("trace", []))
-    system = None
-    for m in rec.get("messages", []):
-        if m.get("role") == "system" and m.get("content"):
-            system = m["content"]
-            break
-    return UTrajectory(
-        source="trace-commons/agent-traces",
-        id=rec.get("session_id") or "",
-        subject=_excerpt(rec.get("prompt")),
-        turns=turns, created_at=_parse_dt(rec.get("sent_at")),
-        system=system, tools=rec.get("tools"),
-        metadata={"harness": rec.get("harness"),
-                  "num_user_messages": rec.get("num_user_messages"),
-                  "num_tool_calls": rec.get("num_tool_calls")},
     )
 
 

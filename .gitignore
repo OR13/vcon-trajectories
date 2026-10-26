@@ -7,10 +7,5 @@ __pycache__/
 build/
 dist/
 
-# HF cache (weights are large and not needed)
+# Downloaded corpora (re-fetched by scripts/build.py)
 .cache/
-
-# Gated dataset (VINAY-UMRETHE/Mythos-Agent) — do NOT publish raw data or its
-# derived vCons in this public repo without an explicit decision.
-data/mythos_agent/
-out_mythos/

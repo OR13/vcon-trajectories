@@ -1,0 +1,13 @@
+$$session-ext //= ( agent_session_id: tstr )
+; "interactive" / "autonomous" / vendor specific
+$$session-ext //= ( format: tstr )
+$$session-ext //= ( environment: environment_type )
+
+; Environment Object
+environment_type = {
+    working_dir: tstr,
+    ? vcs: vcs_context_type,
+    ; sandbox mount paths
+    ? sandboxes: [* tstr],
+    * tstr => any
+  }

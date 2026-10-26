@@ -1,0 +1,8 @@
+vcon-with-ai-agent = vcon
+;# include vcon-core
+;# include ai-agent-vcon
+;# include ai-agent-party
+;# include ai-agent-session
+;# include ai-agent-dialog
+;# include ai-agent-event
+;# include ai-agent-common

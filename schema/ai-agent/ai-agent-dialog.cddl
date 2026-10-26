@@ -1,0 +1,21 @@
+$$dialog-ext //= ( model_id: tstr )
+$$dialog-ext //= ( token_usage: token_usage_type )
+$$dialog-ext //= ( entry_id: agent_entry_id_type )
+$$dialog-ext //= ( parent_id: agent_entry_id_type )
+
+; Token_Usage Object
+token_usage_type = {
+    ; input tokens
+    ? input: uint,
+    ; output tokens
+    ? output: uint,
+    ; cached input tokens
+    ? cached: uint,
+    ; reasoning or thinking tokens
+    ? reasoning: uint,
+    ; total tokens
+    ? total: uint,
+    ; monetary cost in US dollars
+    ? cost: number,
+    * tstr => any
+  }

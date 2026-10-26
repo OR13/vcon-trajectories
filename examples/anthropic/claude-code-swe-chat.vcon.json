@@ -1,0 +1,836 @@
+{
+  "uuid": "2d510d04-6050-8f8b-a656-130ac7c89b56",
+  "extensions": [
+    "ai_agent"
+  ],
+  "created_at": "2026-04-11T08:04:49.815Z",
+  "subject": "I see \"if message[\"role\"] == \"tool\" || message[\"role\"] == \"tool_result\" {\" in th",
+  "recording_agent": {
+    "name": "vcon-trajectories",
+    "version": "0.2.0"
+  },
+  "vcs": {
+    "type": "git",
+    "branch": "cstewart-hc/feat/deterministic-compaction"
+  },
+  "sessions": [
+    {
+      "start": "2026-04-11T08:04:49.815Z",
+      "duration": 526.513,
+      "parties": [
+        1,
+        0
+      ],
+      "dialog": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "agent_session_id": "80926b43-603a-4cff-98b7-492fe77d6cfe",
+      "format": "interactive",
+      "environment": {
+        "working_dir": "/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction"
+      }
+    }
+  ],
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "assistant",
+      "agent_meta": {
+        "model_id": "claude-opus-4-6",
+        "model_provider": "anthropic",
+        "models": [
+          "claude-opus-4-6"
+        ],
+        "cli_name": "claude-code",
+        "cli_version": "2.1.79"
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:04:49.815Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "bridge_status",
+      "data": {
+        "subtype": "bridge_status",
+        "content": "/remote-control is active. Code in CLI or at https://claude.ai/code/REDACTED"
+      },
+      "entry_id": "5b3f8e15-ce56-488b-8bcc-0b1442d260df"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:05:08.611Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 6,
+        "output": 8,
+        "cached": 0,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "a96e9f52-fb0e-4a49-ab18-0b77258affb6",
+      "parent_id": "90c23f1a-c735-420e-8237-8525e5d8337a"
+    },
+    {
+      "type": "reasoning",
+      "time": "2026-04-11T08:05:08.611Z",
+      "session": 0,
+      "party": 1,
+      "content": "",
+      "entry_id": "a96e9f52-fb0e-4a49-ab18-0b77258affb6",
+      "parent_id": "90c23f1a-c735-420e-8237-8525e5d8337a"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:05:09.911Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Grep",
+      "input": {
+        "pattern": "message\\[.role.\\] == .tool",
+        "output_mode": "content",
+        "-n": true,
+        "-C": 5
+      },
+      "call_id": "toolu_01LBHrBqxbwNXJBsAYKUME9b",
+      "entry_id": "caf509c9-729e-4143-9370-8dcb49681664",
+      "parent_id": "a96e9f52-fb0e-4a49-ab18-0b77258affb6"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:05:09.959Z",
+      "session": 0,
+      "party": 1,
+      "output": "/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-380-            ));\n/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-381-        }\n/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-382-    }\n/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-383-\n/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-384-    // Tool result\ncrates/chat/src/compaction.rs:385:    if message[\"role\"] == \"tool\" || message[\"role\"] == \"tool_result\" {\n/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-386-        let tool_name = message\n/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-387-            .get(\"tool_name\")\n/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-388-            .or_else(|| message.get(\"name\"))\ncrates/chat/src/compaction.rs-389-            .and_then(Value::as_str)\n/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs-390-            .unwrap_or(\"unknown\");",
+      "call_id": "toolu_01LBHrBqxbwNXJBsAYKUME9b",
+      "status": "success",
+      "entry_id": "2dbb9bb9-3327-4d41-9b12-452a715bcfa2",
+      "parent_id": "caf509c9-729e-4143-9370-8dcb49681664"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:05:14.878Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 44,
+        "cached": 41205,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "36f6b731-2e2c-4f0b-884f-6daa834575ee",
+      "parent_id": "2dbb9bb9-3327-4d41-9b12-452a715bcfa2"
+    },
+    {
+      "type": "reasoning",
+      "time": "2026-04-11T08:05:14.878Z",
+      "session": 0,
+      "party": 1,
+      "content": "",
+      "entry_id": "36f6b731-2e2c-4f0b-884f-6daa834575ee",
+      "parent_id": "2dbb9bb9-3327-4d41-9b12-452a715bcfa2"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:05:22.845Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "stop_hook_summary",
+      "data": {
+        "subtype": "stop_hook_summary",
+        "level": "suggestion"
+      },
+      "entry_id": "b14307cf-bbb2-4e4d-96e3-b37f374c9648"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:05:54.174Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 6,
+        "output": 0,
+        "cached": 42064,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "4861536e-29d7-46d1-8f9c-436d9360c1d4",
+      "parent_id": "0ceef6ea-8335-42f3-bc2c-3c19562bc211"
+    },
+    {
+      "type": "reasoning",
+      "time": "2026-04-11T08:05:54.174Z",
+      "session": 0,
+      "party": 1,
+      "content": "",
+      "entry_id": "4861536e-29d7-46d1-8f9c-436d9360c1d4",
+      "parent_id": "0ceef6ea-8335-42f3-bc2c-3c19562bc211"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:05:55.017Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Bash",
+      "input": {
+        "command": "git log --oneline main..HEAD 2>/dev/null | head -30",
+        "description": "List commits on this branch vs main"
+      },
+      "call_id": "toolu_01V1QkkoZdkEcvZQiQEZ8QHJ",
+      "entry_id": "62c9521e-f502-4ed3-81c3-328f7e876e76",
+      "parent_id": "4861536e-29d7-46d1-8f9c-436d9360c1d4"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:05:55.351Z",
+      "session": 0,
+      "party": 1,
+      "output": "5e4ee1ec fix(compaction): protect summary tags from budget-pressure dropping\n332ce3d4 fix(compaction): invert candidate order so bullets outlive plain lines\n8a1ce909 fix(compaction): strip preamble and directive from re-compaction extraction\nf86b813b fix(chat): correct recent_messages_preserved flag in compaction\na6b70720 fix(compaction): address Greptile PR #653 review comments\n67d72278 refactor(chat): simplify deterministic compaction module\n1a6f839f fix(compaction): address code review issues #1-7\n110b72b1 feat(chat): deterministic compaction with budget discipline",
+      "call_id": "toolu_01V1QkkoZdkEcvZQiQEZ8QHJ",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "b213fbf0-9527-47ee-83a4-842ce50fb148",
+      "parent_id": "62c9521e-f502-4ed3-81c3-328f7e876e76"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:05:56.228Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Bash",
+      "input": {
+        "command": "gh pr list --head cstewart-hc/feat/deterministic-compaction --json number,title,url,state 2>/dev/null",
+        "description": "Find PR for this branch"
+      },
+      "call_id": "toolu_01Af8RJSQojvSXrDjKTbfSAB",
+      "entry_id": "03ab4601-0b2b-44eb-af83-4bfb6be61b5a",
+      "parent_id": "b213fbf0-9527-47ee-83a4-842ce50fb148"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:05:56.747Z",
+      "session": 0,
+      "party": 1,
+      "output": "[]",
+      "call_id": "toolu_01Af8RJSQojvSXrDjKTbfSAB",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "a465fb3e-a050-4de1-8646-f7191b300135",
+      "parent_id": "03ab4601-0b2b-44eb-af83-4bfb6be61b5a"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:06:00.126Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 45,
+        "cached": 42755,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "908522b6-fe1b-4b43-bce1-515c4f97f37a",
+      "parent_id": "a465fb3e-a050-4de1-8646-f7191b300135"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:06:00.126Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Bash",
+      "input": {
+        "command": "gh pr list --state all --head cstewart-hc/feat/deterministic-compaction --json number,title,url,state 2>/dev/null; gh pr view 653 --json number,title,url,state,headRefName 2>/dev/null",
+        "description": "Look up PR 653 referenced in commits"
+      },
+      "call_id": "toolu_017mMZx6Ku3QqGGTJaDnS3np",
+      "entry_id": "908522b6-fe1b-4b43-bce1-515c4f97f37a",
+      "parent_id": "a465fb3e-a050-4de1-8646-f7191b300135"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:06:00.615Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Bash",
+      "input": {
+        "command": "git diff main...HEAD --stat",
+        "description": "List files changed since main"
+      },
+      "call_id": "toolu_018bXSNEPP9osq3WyUpBKMPf",
+      "entry_id": "45dce5b6-b1bd-4fda-bebd-ac39b74edaae",
+      "parent_id": "908522b6-fe1b-4b43-bce1-515c4f97f37a"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:06:01.167Z",
+      "session": 0,
+      "party": 1,
+      "output": "[]\n{\"headRefName\":\"feat/deterministic-compaction\",\"number\":653,\"state\":\"OPEN\",\"title\":\"feat(chat): replace LLM summarization with deterministic compaction\",\"url\":\"https://github.com/moltis-org/moltis/pull/653\"}",
+      "call_id": "toolu_017mMZx6Ku3QqGGTJaDnS3np",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "ad8258b3-938b-47c9-9ff5-bf28a951b7ce",
+      "parent_id": "908522b6-fe1b-4b43-bce1-515c4f97f37a"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:06:01.250Z",
+      "session": 0,
+      "party": 1,
+      "output": " crates/chat/src/compaction.rs | 1280 +++++++++++++++++++++++++++++++++++++++++\n crates/chat/src/lib.rs        |  124 +---\n 2 files changed, 1309 insertions(+), 95 deletions(-)",
+      "call_id": "toolu_018bXSNEPP9osq3WyUpBKMPf",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "010b944e-18ec-4814-b1b4-d81152ae0310",
+      "parent_id": "45dce5b6-b1bd-4fda-bebd-ac39b74edaae"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:06:04.161Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 55,
+        "cached": 43337,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "4826abb5-2242-4b92-aefe-2ddd5e949546",
+      "parent_id": "010b944e-18ec-4814-b1b4-d81152ae0310"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:06:04.161Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Bash",
+      "input": {
+        "command": "git diff main...HEAD -- crates/chat/src/lib.rs",
+        "description": "Show lib.rs diff"
+      },
+      "call_id": "toolu_01W8Lwqu6d9Z6JpMkDsYcWQG",
+      "entry_id": "4826abb5-2242-4b92-aefe-2ddd5e949546",
+      "parent_id": "010b944e-18ec-4814-b1b4-d81152ae0310"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:06:04.228Z",
+      "session": 0,
+      "party": 1,
+      "output": "diff --git a/crates/chat/src/lib.rs b/crates/chat/src/lib.rs\nindex 23e01282..5e89daaa 100644\n--- a/crates/chat/src/lib.rs\n+++ b/crates/chat/src/lib.rs\n@@ -48,6 +48,8 @@ use {\n     moltis_tools::policy::{ToolPolicy, profile_tools},\n };\n \n+mod compaction;\n+\n pub mod chat_error;\n pub mod error;\n pub mod runtime;\n@@ -4495,51 +4497,15 @@ impl ChatService for LiveChatService {\n             }\n         }\n \n-        // Build a summary prompt from the conversation using structured messages.\n-        // We pass the typed ChatMessage objects directly so role boundaries are\n-        // maintained via the API's message structure, preventing prompt injection\n-        // where user content could mimic role prefixes in concatenated text.\n-        let mut summary_messages = vec![ChatMessage::system(\n-            \"You are a conversation summarizer. The messages that follow are a conversation you must summarize. Preserve all key facts, decisions, and context. After the conversation, you will receive a final instruction.\",\n-        )];\n-        summary_messages.extend(values_to_chat_messages(&history));\n-        summary_messages.push(ChatMessage::user(\n-            \"Summarize the conversation above into a concise form. Output only the summary, no preamble.\",\n-        ));\n-\n-        // Use the session's model if available, otherwise fall back to the model\n-        // from the last assistant message, then to the first registered provider.\n-        let provider = self\n-            .resolve_provider(…[truncated for example; 9134 chars]",
+      "call_id": "toolu_01W8Lwqu6d9Z6JpMkDsYcWQG",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "b00de257-1fa1-4659-933b-006a0f57caa4",
+      "parent_id": "4826abb5-2242-4b92-aefe-2ddd5e949546"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:06:04.537Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Read",
+      "input": {
+        "file_path": "/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs"
+      },
+      "call_id": "toolu_01NLucqiAKMi388zd9kEh3Pd",
+      "entry_id": "7d44780b-dba2-4e70-a3ac-70decf676700",
+      "parent_id": "b00de257-1fa1-4659-933b-006a0f57caa4"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:06:04.843Z",
+      "session": 0,
+      "party": 1,
+      "output": "File content (12960 tokens) exceeds maximum allowed tokens (10000). Use offset and limit parameters to read specific portions of the file, or search for specific content instead of reading the whole file.",
+      "call_id": "toolu_01NLucqiAKMi388zd9kEh3Pd",
+      "status": "error",
+      "is_error": true,
+      "entry_id": "f81f77f9-2896-4a29-9850-0e4f9ad3e14a",
+      "parent_id": "7d44780b-dba2-4e70-a3ac-70decf676700"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:06:08.188Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 139,
+        "cached": 43830,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "f61d01c4-57ee-4ae9-8ea4-b22d97804367",
+      "parent_id": "f81f77f9-2896-4a29-9850-0e4f9ad3e14a"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:06:08.188Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Read",
+      "input": {
+        "file_path": "/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs",
+        "limit": 400
+      },
+      "call_id": "toolu_01BkPz6kji8h8RQaUskfDAhR",
+      "entry_id": "f61d01c4-57ee-4ae9-8ea4-b22d97804367",
+      "parent_id": "f81f77f9-2896-4a29-9850-0e4f9ad3e14a"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:06:08.402Z",
+      "session": 0,
+      "party": 1,
+      "output": "     1→// ── Attribution ───────────────────────────────────────────��──────────\n     2→// Deterministic compaction extraction adapted from claw-code (ultraworkers/claw-code).\n     3→// Original source: rust/crates/runtime/src/compact.rs\n     4→// License: MIT — Copyright (c) ultraworkers\n     5→// https://github.com/ultraworkers/claw-code\n     6→\n     7→//! Deterministic conversation compaction — zero LLM calls.\n     8→//!\n     9→//! Extracts structured summaries from session history by inspecting JSON message\n    10→//! values directly. Produces consistent, auditable output for the same input.\n    11→\n    12→use serde_json::Value;\n    13→\n    14→const COMPACT_CONTINUATION_PREAMBLE: &str = \"This session is being continued from a previous conversation that ran out of context. \\\n    15→    The summary below covers the earlier portion of the conversation.\\n\\n\";\n    16→const COMPACT_RECENT_MESSAGES_NOTE: &str = \"Recent messages are preserved verbatim.\";\n    17→const COMPACT_DIRECT_RESUME_INSTRUCTION: &str = \"Continue the conversation from where it left off without asking the user any further \\\n    18→    questions. Resume directly — do not acknowledge the summary, do not recap what was \\\n    19→    happening, and do not preface with continuation text.\";\n    20→\n    21→/// Maximum total characters for a compaction summary.\n    22→pub const SUMMARY_MAX_CHARS: usize = 1_200;\n    23→/// Maximum number of lines in a compaction summary (excluding omission notice).\n    24→pub const SUM…[truncated for example; 10024 chars]",
+      "call_id": "toolu_01BkPz6kji8h8RQaUskfDAhR",
+      "status": "success",
+      "entry_id": "12c95c50-d69c-46af-91be-fd663eef9dfe",
+      "parent_id": "f61d01c4-57ee-4ae9-8ea4-b22d97804367"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:06:12.141Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 161,
+        "cached": 47492,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "6986a13b-d563-443c-8a9c-5b9526aef345",
+      "parent_id": "12c95c50-d69c-46af-91be-fd663eef9dfe"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:06:12.141Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Read",
+      "input": {
+        "file_path": "/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs",
+        "offset": 400,
+        "limit": 450
+      },
+      "call_id": "toolu_01Kr7kDfKsmxSQMkJ3mmwhWY",
+      "entry_id": "6986a13b-d563-443c-8a9c-5b9526aef345",
+      "parent_id": "12c95c50-d69c-46af-91be-fd663eef9dfe"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:06:12.330Z",
+      "session": 0,
+      "party": 1,
+      "output": "   400→            \"\"\n   401→        };\n   402→        parts.push(truncate_to(\n   403→            &format!(\"tool_result {tool_name}: {prefix}{result_text}\"),\n   404→            PREVIEW_CHARS,\n   405→        ));\n   406→    }\n   407→\n   408→    if parts.is_empty() {\n   409→        \"(empty)\".to_string()\n   410→    } else {\n   411→        parts.join(\" | \")\n   412→    }\n   413→}\n   414→\n   415→/// Collect unique, sorted tool names from message history.\n   416→fn collect_unique_tool_names(messages: &[Value]) -> Vec<&str> {\n   417→    let mut names: Vec<&str> = messages\n   418→        .iter()\n   419→        .flat_map(|m| {\n   420→            let mut out = Vec::new();\n   421→            if let Some(calls) = m.get(\"tool_calls\").and_then(Value::as_array) {\n   422→                for call in calls {\n   423→                    if let Some(name) = call\n   424→                        .get(\"function\")\n   425→                        .and_then(|f| f.get(\"name\"))\n   426→                        .and_then(Value::as_str)\n   427→                    {\n   428→                        out.push(name);\n   429→                    }\n   430→                }\n   431→            }\n   432→            if let Some(name) = m.get(\"tool_name\").and_then(Value::as_str) {\n   433→                out.push(name);\n   434→            }\n   435→            if let Some(name) = m.get(\"name\").and_then(Value::as_str) {\n   436→                out.push(name);\n   437→            }\n   438→            out\n   439→        })\n   440→  …[truncated for example; 10024 chars]",
+      "call_id": "toolu_01Kr7kDfKsmxSQMkJ3mmwhWY",
+      "status": "success",
+      "entry_id": "50e6ff13-dbc3-4294-8d90-6d47c3b58464",
+      "parent_id": "6986a13b-d563-443c-8a9c-5b9526aef345"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:06:17.153Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 36,
+        "cached": 54672,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "5227cb54-7e46-4175-8462-b77fc083fde2",
+      "parent_id": "50e6ff13-dbc3-4294-8d90-6d47c3b58464"
+    },
+    {
+      "type": "reasoning",
+      "time": "2026-04-11T08:06:17.153Z",
+      "session": 0,
+      "party": 1,
+      "content": "",
+      "entry_id": "5227cb54-7e46-4175-8462-b77fc083fde2",
+      "parent_id": "50e6ff13-dbc3-4294-8d90-6d47c3b58464"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:06:18.916Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Read",
+      "input": {
+        "file_path": "/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat/src/compaction.rs",
+        "offset": 849,
+        "limit": 450
+      },
+      "call_id": "toolu_01RuvgAVoB6kzSmJw1gPfyi8",
+      "entry_id": "f18a41da-2e97-4b03-b6bc-0ff320008c4a",
+      "parent_id": "5227cb54-7e46-4175-8462-b77fc083fde2"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:06:19.271Z",
+      "session": 0,
+      "party": 1,
+      "output": "   849→        assert_eq!(result, None);\n   850→    }\n   851→\n   852→    // ── get_compact_continuation_message ─────────────────────────────\n   853→\n   854→    #[test]\n   855→    fn get_compact_continuation_message_full() {\n   856→        let summary = \"<summary>Test summary</summary>\";\n   857→        let msg = get_compact_continuation_message(summary, true);\n   858→        assert!(msg.contains(\"continued from a previous conversation\"));\n   859→        assert!(msg.contains(\"Summary:\"));\n   860→        assert!(msg.contains(\"Test summary\"));\n   861→        assert!(msg.contains(\"Recent messages are preserved verbatim\"));\n   862→        assert!(msg.contains(\"Continue the conversation from where it left off\"));\n   863→    }\n   864→\n   865→    #[test]\n   866→    fn get_compact_continuation_message_no_recent() {\n   867→        let summary = \"<summary>Test</summary>\";\n   868→        let msg = get_compact_continuation_message(summary, false);\n   869→        assert!(!msg.contains(\"Recent messages are preserved\"));\n   870→        assert!(msg.contains(\"Continue the conversation\"));\n   871→    }\n   872→\n   873→    // ── format_compact_summary ───────────────────────────────────────\n   874→\n   875→    #[test]\n   876→    fn format_compact_summary_extracts_tag() {\n   877→        let raw = \"<analysis>scratch</analysis>\\n<summary>Kept work</summary>\";\n   878→        let formatted = format_compact_summary(raw);\n   879→        assert_eq!(formatted, \"Summary:\\nKept work\");\n   880→    }\n   881→\n …[truncated for example; 10024 chars]",
+      "call_id": "toolu_01RuvgAVoB6kzSmJw1gPfyi8",
+      "status": "success",
+      "entry_id": "c0d0dc38-375b-4131-a2a8-9b8f384d6566",
+      "parent_id": "f18a41da-2e97-4b03-b6bc-0ff320008c4a"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:10:15.427Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 49,
+        "cached": 61768,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "22ea6fc0-6518-4c5e-82a2-0dc653eb25df",
+      "parent_id": "c0d0dc38-375b-4131-a2a8-9b8f384d6566"
+    },
+    {
+      "type": "reasoning",
+      "time": "2026-04-11T08:10:15.427Z",
+      "session": 0,
+      "party": 1,
+      "content": "",
+      "entry_id": "22ea6fc0-6518-4c5e-82a2-0dc653eb25df",
+      "parent_id": "c0d0dc38-375b-4131-a2a8-9b8f384d6566"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:10:18.724Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Bash",
+      "input": {
+        "command": "cargo +nightly-2025-11-30 clippy -p moltis-chat --all-targets -- -D warnings 2>&1 | tail -60",
+        "description": "Run clippy on moltis-chat to catch issues",
+        "timeout": 300000
+      },
+      "call_id": "toolu_018Myr3ELcn2H6vWCuizPrE4",
+      "entry_id": "99a9e3f8-d841-4eaf-a857-5b2e74623060",
+      "parent_id": "7bb1baeb-1786-44c7-b471-9f0382b1c3ac"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:11:08.817Z",
+      "session": 0,
+      "party": 1,
+      "output": "    Checking moltis-browser v0.1.0 (/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/browser)\n    Checking moltis-tools v0.1.0 (/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/tools)\n    Checking moltis-chat v0.1.0 (/Users/USER/.superset/worktrees/moltis/cstewart-hc/feat/deterministic-compaction/crates/chat)\nerror: used `unwrap()` on an `Option` value\n    --> crates/chat/src/compaction.rs:1011:23\n     |\n1011 |         let summary = result.unwrap();\n     |                       ^^^^^^^^^^^^^^^\n     |\n     = note: if this value is `None`, it will panic\n     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_used\n     = note: requested on the command line with `-D clippy::unwrap-used`\n\nerror: used `unwrap()` on an `Option` value\n    --> crates/chat/src/compaction.rs:1022:17\n     |\n1022 |         assert!(result.unwrap().contains(\"user=0\"));\n     |                 ^^^^^^^^^^^^^^^\n     |\n     = note: if this value is `None`, it will panic\n     = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#unwrap_used\n\nerror: useless use of `format!`\n    --> crates/chat/src/compaction.rs:1047:24\n     |\n1047 |           let preamble = format!(\n     |  ________________________^\n1048 | |             \"This session is being continued from a previous conversation that ran out of context. \\\n1049 | |              The summary b…[truncated for example; 3122 chars]",
+      "call_id": "toolu_018Myr3ELcn2H6vWCuizPrE4",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "ce030a43-96c9-4c82-bc62-26bcc7fe73c5",
+      "parent_id": "99a9e3f8-d841-4eaf-a857-5b2e74623060"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:11:15.687Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 65,
+        "cached": 69099,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "122e094a-bd31-4fd3-85b6-fe4aa55271a1",
+      "parent_id": "ce030a43-96c9-4c82-bc62-26bcc7fe73c5"
+    },
+    {
+      "type": "reasoning",
+      "time": "2026-04-11T08:11:15.687Z",
+      "session": 0,
+      "party": 1,
+      "content": "",
+      "entry_id": "122e094a-bd31-4fd3-85b6-fe4aa55271a1",
+      "parent_id": "ce030a43-96c9-4c82-bc62-26bcc7fe73c5"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:11:27.403Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Bash",
+      "input": {
+        "command": "cat > /tmp/compact_repro.rs <<'EOF'\n// Mimic the compress_summary logic with the production summarize_messages\n// output to show the tag-reorder behaviour.\n\nfn main() {\n    let mut lines: Vec<String> = vec![\"<summary>\".into(), \"Conversation summary:\".into()];\n    lines.push(\"- Scope: 50 messages.\".into());\n    lines.push(\"- Tools mentioned: exec, read_file, write_file.\".into());\n    lines.push(\"- Key files referenced: src/main.rs, lib/core.ts.\".into());\n    lines.push(\"- Key timeline:\".into());\n    for i in 0..15 {\n        lines.push(format!(\"  - user: This is a long timeline entry number {i} with enough padding to push the total over budget\"));\n    }\n    lines.push(\"</summary>\".into());\n    let input = lines.join(\"\\n\");\n    println!(\"input_len = {}\", input.len());\n\n    // Reproduce compress_summary classification.\n    let mut headers: Vec<String> = Vec::new();\n    let mut bullets: Vec<String> = Vec::new();\n    let mut other: Vec<String> = Vec::new();\n    for line in input.lines() {\n        let trimmed = line.trim_start();\n        if trimmed == \"<summary>\" || trimmed == \"</summary>\" || trimmed.starts_with('#') {\n            headers.push(line.to_string());\n        } else if trimmed.starts_with(['-', '*', '•']) {\n            bullets.push(line.to_string());\n        } else {\n            other.push(line.to_string());\n        }\n    }\n    let mut candidates = bullets;\n    candidates.extend(other);\n    let mut result = headers;\n    result.extend(candidates);\n    let joined = result.j…[truncated for example; 2064 chars]",
+        "description": "Demonstrate tag reordering behavior"
+      },
+      "call_id": "toolu_01EeWBNRMuSvD4oJARmjgvA2",
+      "entry_id": "82a83ed6-7540-4dae-a2bf-a592d8929f83",
+      "parent_id": "4031c9d0-ad36-4797-a396-673be275e4e6"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:11:27.921Z",
+      "session": 0,
+      "party": 1,
+      "output": "input_len = 1668\n---\n<summary>\n</summary>\n- Scope: 50 messages.\n- Tools mentioned: exec, read_file, write_file.\n- Key files referenced: src/main.rs, lib/core.ts.\n- Key timeline:\n  - user: This is a long timeline entry number 0 with enough padding to push the total over budget\n  - user: This is a long timeline entry number 1 with enough padding to push the total over budget\n  - user: This is a long timeline entry numbe\n---\nextracted_between_tags = \"\\n\"",
+      "call_id": "toolu_01EeWBNRMuSvD4oJARmjgvA2",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "4e71d16a-28d3-4024-b099-d32810a185d7",
+      "parent_id": "82a83ed6-7540-4dae-a2bf-a592d8929f83"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:11:34.722Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 52,
+        "cached": 86790,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "28f3cd4c-f356-4c62-9d41-f7c5d302d6aa",
+      "parent_id": "4e71d16a-28d3-4024-b099-d32810a185d7"
+    },
+    {
+      "type": "reasoning",
+      "time": "2026-04-11T08:11:34.722Z",
+      "session": 0,
+      "party": 1,
+      "content": "",
+      "entry_id": "28f3cd4c-f356-4c62-9d41-f7c5d302d6aa",
+      "parent_id": "4e71d16a-28d3-4024-b099-d32810a185d7"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:11:39.742Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Grep",
+      "input": {
+        "pattern": "compaction::(summarize_messages|merge_compact_summaries|format_compact_summary|extract_existing_compacted_summary)",
+        "output_mode": "content",
+        "-n": true
+      },
+      "call_id": "toolu_014vAi9gkhSFGpMWkRcVLmZn",
+      "entry_id": "3253c2f0-16e6-4153-8dff-2c50be7f85dd",
+      "parent_id": "9147f090-2d9d-42f3-9097-8e6c659c6fb7"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:11:39.797Z",
+      "session": 0,
+      "party": 1,
+      "output": "No matches found",
+      "call_id": "toolu_014vAi9gkhSFGpMWkRcVLmZn",
+      "status": "success",
+      "entry_id": "bd35d2ac-b722-42d8-8740-662a00c3d4b3",
+      "parent_id": "3253c2f0-16e6-4153-8dff-2c50be7f85dd"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-04-11T08:11:40.833Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Bash",
+      "input": {
+        "command": "gh pr view 653 --json reviews,reviewDecision,statusCheckRollup,comments 2>&1 | head -200",
+        "description": "Check PR review state"
+      },
+      "call_id": "toolu_01VMvyP8cP6YtGugKq8LaJvj",
+      "entry_id": "ea20a2bf-08fc-4748-bc69-910c4f56d505",
+      "parent_id": "bd35d2ac-b722-42d8-8740-662a00c3d4b3"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-04-11T08:11:41.648Z",
+      "session": 0,
+      "party": 1,
+      "output": "{\"comments\":[{\"id\":\"IC_kwDOREW6tc77-A4S\",\"author\":{\"login\":\"greptile-apps\"},\"authorAssociation\":\"CONTRIBUTOR\",\"body\":\"<h3>Greptile Summary</h3>\\n\\nReplaces the LLM streaming compaction path in both `compact()` and `compact_session()` with a new deterministic extraction module (`compaction.rs`). The provider dependency is removed from `compact_session`'s signature, and the budget-enforcement logic (`compress_summary`) is co-located with the new module. Previously reported P1 issues (tag-search anchoring in `strip_tag_block`, `calls.first()` in key-file collection, `</summary>` dropping under budget pressure, preamble boilerplate leaking into re-compaction summaries, and `recent_messages_preserved: true` mismatch) all appear to be addressed in this revision.\\n\\n<h3>Confidence Score: 5/5</h3>\\n\\nSafe to merge; all previously flagged P1 issues are resolved and remaining findings are P2 structural concerns.\\n\\nThe prior review round surfaced several P1 bugs (tag-search anchoring, single-call file scan, summary-tag budget drop, preamble leakage into re-compaction, recent_messages_preserved mismatch) and all are addressed in this revision. The two remaining findings are P2: a structural tag-ordering quirk in compress_summary when the budget is exceeded (mitigated downstream by format_compact_summary), and a minor false-positive risk in collect_unique_tool_names from the catch-all name field. Neither affects correctness of the production pipeline as wired today.\\n\\ncrates/chat/src/co…[truncated for example; 8617 chars]",
+      "call_id": "toolu_01VMvyP8cP6YtGugKq8LaJvj",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "0d5a7e55-c8e3-4582-946a-ffcbb71510c0",
+      "parent_id": "ea20a2bf-08fc-4748-bc69-910c4f56d505"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:11:52.577Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "token-count",
+      "data": {
+        "input": 1,
+        "output": 47,
+        "cached": 88008,
+        "model": "claude-opus-4-6"
+      },
+      "entry_id": "1c980fd1-dc91-404c-9e47-0d86497a2a20",
+      "parent_id": "0d5a7e55-c8e3-4582-946a-ffcbb71510c0"
+    },
+    {
+      "type": "reasoning",
+      "time": "2026-04-11T08:11:52.577Z",
+      "session": 0,
+      "party": 1,
+      "content": "",
+      "entry_id": "1c980fd1-dc91-404c-9e47-0d86497a2a20",
+      "parent_id": "0d5a7e55-c8e3-4582-946a-ffcbb71510c0"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:12:42.102Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "stop_hook_summary",
+      "data": {
+        "subtype": "stop_hook_summary",
+        "level": "suggestion"
+      },
+      "entry_id": "01199438-bd54-483b-b78c-60b8359cd15a"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-04-11T08:12:42.103Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "turn_duration",
+      "data": {
+        "subtype": "turn_duration",
+        "durationMs": 410408
+      },
+      "entry_id": "bbed7024-5b97-4553-9213-5c8555164574",
+      "parent_id": "01199438-bd54-483b-b78c-60b8359cd15a"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "start": "2026-04-11T08:05:05.718Z",
+      "parties": 0,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "I see \"if message[\"role\"] == \"tool\" || message[\"role\"] == \"tool_result\" {\" in the code, but what if role does not exist? What happens, how do we know it already exists?",
+      "entry_id": "90c23f1a-c735-420e-8237-8525e5d8337a",
+      "parent_id": "5b3f8e15-ce56-488b-8bcc-0b1442d260df"
+    },
+    {
+      "type": "text",
+      "start": "2026-04-11T08:05:21.955Z",
+      "parties": 1,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "Short answer: it's safe because of how `serde_json::Value`'s `Index` impl works.\n\nWhen you write `message[\"role\"]` on a `serde_json::Value`:\n\n- If `message` is an object and the key exists → returns `&Value::String(\"tool\")` (or whatever).\n- If the key is missing, or `message` isn't an object at all → returns a reference to a static `Value::Null`. **It does not panic.**\n\nThen `Value::Null == \"tool\"` evaluates to `false` (serde_json's `PartialEq<str>` for `Value` only returns true when the value is actually a `Value::String` matching the str). So a missing `role` just falls through — the branch isn't taken, and execution continues to whatever comes after at crates/chat/src/compaction.rs:385.\n\nThis is different from `HashMap`/`Vec` indexing, which panics on missing keys. `serde_json` deliberately chose the lenient behavior so you can chain `value[\"a\"][\"b\"][\"c\"]` without unwrapping at each step.\n\nIf you wanted to be explicit/defensive you could write it as:\n\n```rust\nif matches!(message.get(\"role\").and_then(Value::as_str), Some(\"tool\" | \"tool_result\")) {\n```\n\n…but the current form is idiomatic serde_json and behaves correctly for the missing-key case.",
+      "model_id": "claude-opus-4-6",
+      "entry_id": "258f7fa4-98dc-4551-b22f-0ec8cbc24f82",
+      "parent_id": "36f6b731-2e2c-4f0b-884f-6daa834575ee"
+    },
+    {
+      "type": "text",
+      "start": "2026-04-11T08:05:51.408Z",
+      "parties": 0,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "Can you review the PR and find any issues?",
+      "entry_id": "0ceef6ea-8335-42f3-bc2c-3c19562bc211",
+      "parent_id": "b14307cf-bbb2-4e4d-96e3-b37f374c9648"
+    },
+    {
+      "type": "text",
+      "start": "2026-04-11T08:10:16.093Z",
+      "parties": 1,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "Let me run clippy to verify some potential lint issues, and look at how `format_compact_summary` handles the output of `compress_summary` to confirm the tag-ordering behavior.",
+      "model_id": "claude-opus-4-6",
+      "entry_id": "7bb1baeb-1786-44c7-b471-9f0382b1c3ac",
+      "parent_id": "22ea6fc0-6518-4c5e-82a2-0dc653eb25df"
+    },
+    {
+      "type": "text",
+      "start": "2026-04-11T08:11:16.438Z",
+      "parties": 1,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "Clippy confirms several issues. Let me also verify the `<summary>`/`</summary>` tag-reordering bug I suspected by running a focused test.",
+      "model_id": "claude-opus-4-6",
+      "entry_id": "4031c9d0-ad36-4797-a396-673be275e4e6",
+      "parent_id": "122e094a-bd31-4fd3-85b6-fe4aa55271a1"
+    },
+    {
+      "type": "text",
+      "start": "2026-04-11T08:11:38.154Z",
+      "parties": 1,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "Confirmed: after `compress_summary` the `<summary>`/`</summary>` tags are placed adjacent at the top with the body content following the closing tag. `extract_tag_block` on the raw compressed string returns just `\"\\n\"` — missing the whole body. It accidentally still renders OK because `format_compact_summary`'s `replacen` only rewrites the `<summary>\\n</summary>` substring and leaves the body text alone.\n\nLet me check a couple more things and look at the greptile PR review state, then write up the review.",
+      "model_id": "claude-opus-4-6",
+      "entry_id": "9147f090-2d9d-42f3-9097-8e6c659c6fb7",
+      "parent_id": "28f3cd4c-f356-4c62-9d41-f7c5d302d6aa"
+    },
+    {
+      "type": "text",
+      "start": "2026-04-11T08:12:41.709Z",
+      "parties": 1,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "I have enough to write up the review. A Greptile bot review already flagged some of these (and marked them P2), but there are also real clippy failures (which would block `just lint`) that haven't been addressed.\n\n## PR Review — feat/deterministic-compaction (PR #653)\n\n### Blockers\n\n**1. Clippy fails in tests — `just lint` / `just release-preflight` will break.**\nFive `-D warnings` errors in `crates/chat/src/compaction.rs`:\n\n- `unwrap_used` at compaction.rs:1011, 1022, 1055, 1069 — four `.unwrap()` calls in tests.\n  The workspace lint denies `clippy::unwrap_used`, so tests must use `.expect(\"…\")` or destructuring/`assert!(result.is_some())` followed by pattern match. The rest of the file already uses `.expect()` in helpers; these stragglers slipped through.\n- `useless_format` at compaction.rs:1047 — `format!(...)` with no format args (in `extract_existing_compacted_summary_preamble_format`). Should be a plain string literal with `.to_string()`.\n\nYou can reproduce with `cargo +nightly-2025-11-30 clippy -p moltis-chat --all-targets -- -D warnings`. CI will fail. These are mechanical fixes but they're real blockers.\n\n### Correctness — P2 but worth fixing\n\n**2. `<summary>`/`</summary>` reordering when `compress_summary` exceeds budget** (compaction.rs:250–279)\nThe bucketing classifies both tags as `headers` and then `result = headers; result.extend(candidates);` produces:\n\n```\n<summary>\n</summary>\n- Scope: …\n- Key timeline:\n  - user: …\n```\n\nI reproduced this with the exact fixtur…[truncated for example; 6663 chars]",
+      "model_id": "claude-opus-4-6",
+      "entry_id": "75ff35dd-3e97-43e3-ad49-d08b93ae267e",
+      "parent_id": "1c980fd1-dc91-404c-9e47-0d86497a2a20"
+    },
+    {
+      "type": "text",
+      "start": "2026-04-11T08:13:36.328Z",
+      "parties": 0,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "proceed then",
+      "entry_id": "19e8ee78-5898-4100-8e2f-2ca65624bc99",
+      "parent_id": "bbed7024-5b97-4553-9213-5c8555164574"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "SALT-NLP/SWE-chat",
+      "schema": "trajectory-metadata",
+      "session": [
+        0
+      ],
+      "mediatype": "application/json",
+      "encoding": "json",
+      "body": {
+        "harness": "claude_code",
+        "native_records_not_mapped": {
+          "thinking.signature_only(empty content)": 139
+        },
+        "parent_id_relinked": 19,
+        "example_note": "sample slice: first 60 of 2150 turns; long strings truncated",
+        "source": "SALT-NLP/SWE-chat",
+        "id": "80926b43-603a-4cff-98b7-492fe77d6cfe"
+      }
+    }
+  ]
+}

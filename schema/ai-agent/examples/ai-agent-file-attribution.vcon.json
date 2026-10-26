@@ -1,0 +1,164 @@
+{
+  "uuid": "01928e10-193e-8231-b9a2-079d3c1a8b5e",
+  "created_at": "2026-10-26T14:02:11Z",
+  "extensions": [
+    "ai_agent"
+  ],
+  "recording_agent": {
+    "name": "example-recorder",
+    "version": "0.1.0"
+  },
+  "vcs": {
+    "type": "git",
+    "revision": "4f2a9c1",
+    "branch": "main",
+    "repository": "https://git.example.com/project.git"
+  },
+  "parties": [
+    {
+      "name": "Alice",
+      "type": "person"
+    },
+    {
+      "name": "Coding Agent",
+      "type": "bot",
+      "agent_meta": {
+        "model_id": "example-model-2026-10",
+        "model_provider": "example-provider",
+        "cli_name": "example-cli",
+        "cli_version": "1.2.0"
+      }
+    }
+  ],
+  "sessions": [
+    {
+      "start": "2026-10-26T14:00:00Z",
+      "duration": 95,
+      "parties": [
+        0,
+        1
+      ],
+      "dialog": [
+        0,
+        1
+      ],
+      "agent_session_id": "8d1f6c2e-5a77-4c1e-9d4b-2f3a6b7c8d9e",
+      "format": "interactive",
+      "environment": {
+        "working_dir": "/home/alice/project",
+        "vcs": {
+          "type": "git",
+          "revision": "4f2a9c1",
+          "branch": "main"
+        }
+      }
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "start": "2026-10-26T14:00:05Z",
+      "parties": 0,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "What does the function compute_rate do?",
+      "entry_id": "e1"
+    },
+    {
+      "type": "text",
+      "start": "2026-10-26T14:01:30Z",
+      "parties": 1,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "It computes the interest rate via a database lookup.",
+      "model_id": "example-model-2026-10",
+      "token_usage": {
+        "input": 1834,
+        "output": 212,
+        "total": 2046
+      },
+      "entry_id": "e5",
+      "parent_id": "e1"
+    }
+  ],
+  "events": [
+    {
+      "type": "reasoning",
+      "time": "2026-10-26T14:00:07Z",
+      "session": 0,
+      "party": 1,
+      "content": "Read the source of compute_rate first.",
+      "entry_id": "e2",
+      "parent_id": "e1"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-10-26T14:00:09Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "Read",
+      "input": {
+        "file_path": "src/rate.py"
+      },
+      "call_id": "call-1",
+      "entry_id": "e3",
+      "parent_id": "e1"
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-10-26T14:00:10Z",
+      "session": 0,
+      "party": 1,
+      "output": "def compute_rate(user): ...",
+      "call_id": "call-1",
+      "status": "success",
+      "is_error": false,
+      "entry_id": "e4",
+      "parent_id": "e3"
+    },
+    {
+      "type": "system-event",
+      "time": "2026-10-26T14:01:35Z",
+      "session": 0,
+      "party": 1,
+      "event_type": "session-end"
+    }
+  ],
+  "file_attribution": {
+    "files": [
+      {
+        "path": "src/rate.py",
+        "conversations": [
+          {
+            "url": "https://agent.example.com/sessions/8d1f6c2e",
+            "contributor": {
+              "type": "ai",
+              "model_id": "example-model-2026-10"
+            },
+            "ranges": [
+              {
+                "start_line": 10,
+                "end_line": 25,
+                "content_hash": "9f86d081884c7d65",
+                "content_hash_alg": "sha-256"
+              },
+              {
+                "start_line": 30,
+                "end_line": 31,
+                "contributor": {
+                  "type": "human"
+                }
+              }
+            ],
+            "related": [
+              {
+                "type": "issue",
+                "url": "https://git.example.com/project/issues/42"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

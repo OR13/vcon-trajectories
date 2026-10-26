@@ -1,0 +1,66 @@
+$$vcon-ext //= ( recording_agent: recording_agent_type )
+$$vcon-ext //= ( vcs: vcs_context_type )
+$$vcon-ext //= ( file_attribution: file_attribution_type )
+
+; Recording_Agent Object
+recording_agent_type = {
+    name: tstr,
+    ? version: tstr,
+    * tstr => any
+  }
+
+; File_Attribution Object
+file_attribution_type = {
+    files: [* file_type],
+    * $$file-attribution-ext
+  }
+
+; File Object
+file_type = {
+    ; relative path from the repository root
+    path: tstr,
+    conversations: [* file_conversation_type],
+    * $$file-ext
+  }
+
+; File_Conversation Object
+file_conversation_type = {
+    ? url: uri_type,
+    ; default contributor for all ranges
+    ? contributor: contributor_type,
+    ranges: [* range_type],
+    ? related: [* resource_type],
+    * $$file-conversation-ext
+  }
+
+; Range Object
+range_type = {
+    ; 1-indexed
+    start_line: uint,
+    ; 1-indexed, inclusive
+    end_line: uint,
+    ? content_hash: tstr,
+    ; default: "sha-256"
+    ? content_hash_alg: tstr,
+    ; overrides the conversation level contributor
+    ? contributor: contributor_type,
+    * $$range-ext
+  }
+
+; Contributor Object
+contributor_type = {
+    type: "human" / "ai" / "mixed" / "unknown",
+    ? model_id: tstr,
+    * $$contributor-ext
+  }
+
+; Resource Object
+resource_type = {
+    type: tstr,
+    url: uri_type,
+    * $$resource-ext
+  }
+
+; URI (RFC 3986)
+uri_type = tstr .regexp
+    "(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?"

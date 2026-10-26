@@ -1,86 +1,100 @@
-"""Validate vCon objects against the IETF vCon JSON Schema (draft core-03, App. B).
+"""Validate vCons against the pinned draft CDDL (+ the constraints CDDL can't express).
 
-Primary validation is JSON-Schema based (the authoritative artifact). A secondary
-cross-check against the ``python-vcon`` reference implementation is available but
-note that python-vcon only speaks vCon 0.0.2, while this project targets 0.4.0,
-so it is used only to show the reference tool round-trips a downgraded copy.
+The draft's CDDL is split across files and composed with a root rule
+(`vcon-with-ai-agent = vcon`), exactly as the draft's `ai-agent.cddl` prescribes.
+Validation uses the Ruby `cddl` gem (the RFC 8610 reference implementation the
+draft's CDDL targets); on PATH it is often shadowed by the Rust `cddl` crate, so
+the binary is resolved through `Gem.bindir`.
 """
 from __future__ import annotations
 
-import json
 import os
-from typing import Any, Dict, List, Optional
+import subprocess
+import tempfile
+import json
+from typing import Any, Dict, List, Tuple
 
-from jsonschema import Draft7Validator, FormatChecker
-
-_DEFAULT_SCHEMA = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-    "schema",
-    "vcon_json_schema.json",
-)
-
-
-def load_schema(path: str = _DEFAULT_SCHEMA) -> Dict[str, Any]:
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
+HERE = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+SCHEMA_DIR = os.path.join(HERE, "schema", "ai-agent")
+# Order matters: the first rule is the validation root.
+_PARTS = ["vcon-core", "ai-agent-vcon", "ai-agent-party", "ai-agent-session",
+          "ai-agent-dialog", "ai-agent-event", "ai-agent-common"]
+_ROOT = "vcon-with-ai-agent = vcon\n\n"
 
 
-def make_validator(schema: Optional[Dict[str, Any]] = None) -> Draft7Validator:
-    if schema is None:
-        schema = load_schema()
-    return Draft7Validator(schema, format_checker=FormatChecker())
+def compose_cddl() -> str:
+    parts = [_ROOT]
+    for name in _PARTS:
+        with open(os.path.join(SCHEMA_DIR, f"{name}.cddl"), encoding="utf-8") as f:
+            parts.append(f.read() + "\n")
+    return "".join(parts)
 
 
-def validate_vcon(
-    vcon: Dict[str, Any], validator: Optional[Draft7Validator] = None
-) -> List[str]:
-    """Return a list of human-readable schema errors (empty == valid)."""
-    if validator is None:
-        validator = make_validator()
-    errors = []
-    for e in sorted(validator.iter_errors(vcon), key=lambda x: list(x.path)):
-        loc = "/".join(str(p) for p in e.path) or "<root>"
-        errors.append(f"{loc}: {e.message}")
-    return errors
+def gem_cddl_bin() -> str:
+    bindir = subprocess.check_output(["ruby", "-e", "print Gem.bindir"], text=True).strip()
+    binary = os.path.join(bindir, "cddl")
+    if not os.path.exists(binary):
+        raise RuntimeError(f"`cddl` gem binary not found at {binary}; run `gem install cddl`")
+    return binary
 
 
-def _quiet_pyvcon() -> None:
-    """python-vcon emits INFO logs on import; keep our CLI output readable."""
-    import logging
+class CddlValidator:
+    def __init__(self) -> None:
+        self.binary = gem_cddl_bin()
+        self._dir = tempfile.mkdtemp(prefix="vcon-cddl-")
+        self.cddl_path = os.path.join(self._dir, "composed.cddl")
+        with open(self.cddl_path, "w", encoding="utf-8") as f:
+            f.write(compose_cddl())
 
-    for name in ("vcon", "root"):
-        logging.getLogger(name).setLevel(logging.CRITICAL)
-    logging.disable(logging.ERROR)
+    def validate_path(self, path: str) -> Tuple[bool, str]:
+        p = subprocess.run([self.binary, self.cddl_path, "validate", path],
+                           capture_output=True, text=True)
+        if p.returncode == 0:
+            return True, ""
+        lines = (p.stdout + p.stderr).strip().splitlines()
+        return False, (lines[0][:200] if lines else f"exit {p.returncode}")
+
+    def validate(self, vcon: Dict[str, Any]) -> Tuple[bool, str]:
+        path = os.path.join(self._dir, "in.json")
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(vcon, f)
+        return self.validate_path(path)
 
 
-def pyvcon_available() -> bool:
-    try:
-        _quiet_pyvcon()
-        import vcon  # noqa: F401
-        return True
-    except Exception:
-        return False
-
-
-def pyvcon_roundtrip(vcon_obj: Dict[str, Any]) -> str:
-    """Cross-check with the python-vcon reference implementation.
-
-    python-vcon only accepts vCon versions 0.0.1/0.0.2. We downgrade a *copy*'s
-    version tag purely so the reference loader will parse it, demonstrating the
-    reference tool round-trips the structure. Returns a status string.
-    """
-    try:
-        import vcon as pyvcon
-    except Exception as exc:  # pragma: no cover
-        return f"skipped (python-vcon not importable: {exc})"
-
-    downgraded = dict(vcon_obj)
-    downgraded["vcon"] = "0.0.2"
-    try:
-        v = pyvcon.Vcon()
-        v.loads(json.dumps(downgraded))
-        parties = len(v.parties)
-        dialogs = len(v.dialog)
-        return f"ok (python-vcon parsed downgraded 0.0.2 copy: {parties} parties, {dialogs} dialogs)"
-    except Exception as exc:
-        return f"rejected by python-vcon: {exc}"
+def semantic_issues(vcon: Dict[str, Any]) -> List[str]:
+    """Constraints the CDDL comments say are 'not enforced by this CDDL'."""
+    issues: List[str] = []
+    n = {k: len(vcon.get(k, [])) for k in ("sessions", "parties", "dialog", "events")}
+    if (n["events"] or n["dialog"]) and not n["sessions"]:
+        issues.append("events/dialog present but no Session Object")
+    for i, s in enumerate(vcon.get("sessions", [])):
+        for p in s.get("parties", []):
+            if p >= n["parties"]:
+                issues.append(f"sessions[{i}].parties index {p} out of range")
+        for d in s.get("dialog", []):
+            if d >= n["dialog"]:
+                issues.append(f"sessions[{i}].dialog index {d} out of range")
+        for ref in s.get("sessions", []):
+            if ref["session"] >= n["sessions"]:
+                issues.append(f"sessions[{i}].sessions ref {ref['session']} out of range")
+        if "start" in s:
+            for d in s.get("dialog", []):
+                if d < n["dialog"] and vcon["dialog"][d].get("start", "") < s["start"]:
+                    issues.append(f"sessions[{i}].start is after dialog[{d}].start")
+    ids = {x["entry_id"] for k in ("dialog", "events") for x in vcon.get(k, []) if "entry_id" in x}
+    for k in ("dialog", "events"):
+        for i, x in enumerate(vcon.get(k, [])):
+            if "parent_id" in x and x["parent_id"] not in ids:
+                issues.append(f"{k}[{i}].parent_id {x['parent_id']!r} matches no entry_id")
+    calls = set()
+    for i, e in enumerate(vcon.get("events", [])):
+        if e["session"] >= n["sessions"]:
+            issues.append(f"events[{i}].session out of range")
+        if e["party"] >= n["parties"]:
+            issues.append(f"events[{i}].party out of range")
+        if e["type"] == "tool-call" and "call_id" in e:
+            calls.add(e["call_id"])
+    for i, e in enumerate(vcon.get("events", [])):
+        if e["type"] == "tool-result" and "call_id" in e and e["call_id"] not in calls:
+            issues.append(f"events[{i}] tool-result call_id {e['call_id']!r} has no tool-call")
+    return issues
