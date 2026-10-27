@@ -7,6 +7,8 @@ it parses native Claude Code (Anthropic), Codex CLI (OpenAI) and Gemini CLI (Goo
 sessions into one neutral trajectory model, emits `ai_agent` vCons, validates them
 against the draft's own CDDL, and reports where the draft fits and where it doesn't.
 
+> **Draft:** [henkbirkholz/draft-birkholz-vcon-ai-agent-extension](https://github.com/henkbirkholz/draft-birkholz-vcon-ai-agent-extension) · pinned copy in [`schema/ai-agent/`](schema/ai-agent/) · findings for the authors in [`docs/draft-feedback.md`](docs/draft-feedback.md)
+
 ```
 81 real sessions / 4 corpora → 81/81 valid against the draft CDDL (+ semantic checks)
 draft's own examples: 2/2 accepted, 12/12 negative controls rejected
