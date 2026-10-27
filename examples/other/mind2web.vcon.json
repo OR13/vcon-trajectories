@@ -1,0 +1,111 @@
+{
+  "uuid": "e089a961-d9aa-8440-97b1-8b97ace44058",
+  "extensions": [
+    "ai_agent"
+  ],
+  "created_at": "2026-10-26T00:00:00Z",
+  "subject": "Check for pickup restaurant available in Boston, NY on March 18, 5pm with just o",
+  "recording_agent": {
+    "name": "vcon-trajectories",
+    "version": "0.2.0"
+  },
+  "sessions": [
+    {
+      "start": "2026-10-26T00:00:00Z",
+      "duration": 4.0,
+      "parties": [
+        0,
+        1
+      ],
+      "dialog": [
+        0
+      ]
+    }
+  ],
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "assistant"
+    }
+  ],
+  "events": [
+    {
+      "type": "tool-result",
+      "time": "2026-10-26T00:00:01Z",
+      "session": 0,
+      "party": 1,
+      "output": "<html backend_node_id=\"145\">\n  <body>\n    <div backend_node_id=\"589\">\n      <div backend_node_id=\"590\">\n        <div backend_node_id=\"597\">\n          <div backend_node_id=\"598\">\n            <a backend_node_id=\"600\">\n                <text backend_node_id=\"601\">Skip to main content</text>\n              </a>\n            <a backend_node_id=\"606\">\n                      <text backend_node_id=\"607\">Use Tock at your business</text>\n                    </a>\n                  <header backend_node_id=\"612\">\n              <div backend_node_id=\"614\">\n                  <a backend_node_id=\"617\" aria_label=\"Tock home page\"/>\n                  <div backend_node_id=\"625\">\n                    <button backend_node_id=\"626\" aria_label=\"Search\"/>\n                    <button backend_node_id=\"630\" aria_label=\"Menu\"/>\n                  </div>\n                </div>\n              <div backend_node_id=\"635\">\n                <div backend_node_id=\"636\">\n                  <div backend_node_id=\"638\">\n                    <a backend_node_id=\"639\" aria_label=\"Tock home page\"/>\n                    <button backend_node_id=\"647\" aria_label=\"Book a reservation. Toggle open a menu of reservation types\">\n                      <span backend_node_id=\"649\">\n                        <text backend_node_id=\"650\">Book a reservation</text>\n                      </span>\n                    </button>\n                    <button backend_node_id=\"654\" aria_label=\"Book a reservation. Toggle open a menu of reservation types\">\n   …[truncated for example; 38728 chars]"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-10-26T00:00:02Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "SELECT",
+      "input": {
+        "op": "SELECT",
+        "value": "Pickup",
+        "target": {
+          "tag": "select",
+          "backend_node_id": "136"
+        }
+      }
+    },
+    {
+      "type": "tool-result",
+      "time": "2026-10-26T00:00:03Z",
+      "session": 0,
+      "party": 1,
+      "output": "<html backend_node_id=\"3119\">\n  <body>\n    <div backend_node_id=\"3563\">\n      <div backend_node_id=\"3564\">\n        <div backend_node_id=\"3571\">\n          <div backend_node_id=\"3572\">\n            <a backend_node_id=\"3574\">\n                <text backend_node_id=\"3575\">Skip to main content</text>\n              </a>\n            <a backend_node_id=\"3580\">\n                      <text backend_node_id=\"3581\">Use Tock at your business</text>\n                    </a>\n                  <header backend_node_id=\"3586\">\n              <div backend_node_id=\"3588\">\n                  <a backend_node_id=\"3591\" aria_label=\"Tock home page\"/>\n                  <div backend_node_id=\"3599\">\n                    <button backend_node_id=\"3600\" aria_label=\"Search\"/>\n                    <button backend_node_id=\"3604\" aria_label=\"Menu\"/>\n                  </div>\n                </div>\n              <div backend_node_id=\"3609\">\n                <div backend_node_id=\"3610\">\n                  <div backend_node_id=\"3612\">\n                    <a backend_node_id=\"3613\" aria_label=\"Tock home page\"/>\n                    <button backend_node_id=\"3621\" aria_label=\"Book a reservation. Toggle open a menu of reservation types\">\n                      <span backend_node_id=\"3623\">\n                        <text backend_node_id=\"3624\">Book a reservation</text>\n                      </span>\n                    </button>\n                    <button backend_node_id=\"3628\" aria_label=\"Book a reservation. Toggle open a menu of …[truncated for example; 36689 chars]"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-10-26T00:00:04Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "CLICK",
+      "input": {
+        "op": "CLICK",
+        "value": "",
+        "target": {
+          "tag": "svg",
+          "backend_node_id": "3113"
+        }
+      }
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "start": "2026-10-26T00:00:00Z",
+      "parties": 0,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "Check for pickup restaurant available in Boston, NY on March 18, 5pm with just one guest"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "osunlp/Mind2Web",
+      "schema": "trajectory-metadata",
+      "session": [
+        0
+      ],
+      "mediatype": "application/json",
+      "encoding": "json",
+      "body": {
+        "website": "exploretock",
+        "domain": "Travel",
+        "subdomain": "Restaurant",
+        "source": "osunlp/Mind2Web",
+        "id": "7bda9645-0b5f-470a-8dd7-6af0bff4da68",
+        "timestamps_synthesized": 5
+      }
+    }
+  ]
+}

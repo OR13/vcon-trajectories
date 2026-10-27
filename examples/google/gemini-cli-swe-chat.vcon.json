@@ -1,0 +1,136 @@
+{
+  "uuid": "a6da6c32-959c-80a3-b6de-83f99e32194e",
+  "extensions": [
+    "ai_agent"
+  ],
+  "created_at": "2026-03-18T21:56:57.632Z",
+  "subject": "create test2/go",
+  "recording_agent": {
+    "name": "vcon-trajectories",
+    "version": "0.2.0"
+  },
+  "sessions": [
+    {
+      "start": "2026-03-18T21:56:57.632Z",
+      "duration": 51.173,
+      "parties": [
+        0,
+        1
+      ],
+      "dialog": [
+        0,
+        1
+      ],
+      "agent_session_id": "4347891d-4adf-48ef-b273-248ecf221ca6",
+      "format": "interactive"
+    }
+  ],
+  "parties": [
+    {
+      "type": "person",
+      "name": "user"
+    },
+    {
+      "type": "bot",
+      "name": "assistant"
+    }
+  ],
+  "events": [
+    {
+      "type": "tool-call",
+      "time": "2026-03-18T21:57:19.433Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "run_shell_command",
+      "input": {
+        "command": "mkdir -p test2",
+        "description": "Create the directory 'test2'."
+      },
+      "call_id": "run_shell_command-1773871021345-619677574df2e8",
+      "entry_id": "4347891d-4adf-48ef-b273-248ecf221ca6#1"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-03-18T21:57:25.628Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "write_file",
+      "input": {
+        "content": "package test2\n\nfunc main() {\n    // This is a placeholder for the new test file.\n    // The user can add their Go test code here.\n}\n",
+        "file_path": "test2/go"
+      },
+      "call_id": "write_file-1773871043962-d6e85fc4e76fd",
+      "entry_id": "4347891d-4adf-48ef-b273-248ecf221ca6#2"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-03-18T21:57:34.066Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "run_shell_command",
+      "input": {
+        "command": "mv test2/go test2/go_test.go",
+        "description": "Rename test2/go to test2/go_test.go to follow Go test file naming conventions."
+      },
+      "call_id": "run_shell_command-1773871051950-22c877d3742a",
+      "entry_id": "4347891d-4adf-48ef-b273-248ecf221ca6#3"
+    },
+    {
+      "type": "tool-call",
+      "time": "2026-03-18T21:57:44.946Z",
+      "session": 0,
+      "party": 1,
+      "tool_name": "replace",
+      "input": {
+        "new_string": "package test2_test\n\nimport \"testing\"\n\nfunc TestPlaceholder(t *testing.T) {\n\tt.Parallel()\n\t// This is a placeholder for the new test file.\n\t// The user can add their Go test code here.\n}\n",
+        "old_string": "package test2\n\nfunc main() {\n    // This is a placeholder for the new test file.\n    // The user can add their Go test code here.\n}",
+        "instruction": "Update the content of the file to be a proper Go test file. Change package to `test2_test` and add a basic test function `TestPlaceholder`.",
+        "file_path": "/private/tmp/cli-updated-gemini-hooks/test2/go_test.go"
+      },
+      "call_id": "replace-1773871058522-dd73692f4b69c",
+      "entry_id": "4347891d-4adf-48ef-b273-248ecf221ca6#4"
+    }
+  ],
+  "dialog": [
+    {
+      "type": "text",
+      "start": "2026-03-18T21:56:57.632Z",
+      "parties": 0,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "create test2/go",
+      "entry_id": "4347891d-4adf-48ef-b273-248ecf221ca6#0"
+    },
+    {
+      "type": "text",
+      "start": "2026-03-18T21:57:48.805Z",
+      "parties": 1,
+      "mediatype": "text/plain",
+      "encoding": "none",
+      "body": "I have created the directory `test2` and a Go test file `test2/go_test.go` with a placeholder test function.",
+      "token_usage": {
+        "input": 16578,
+        "output": 30
+      },
+      "entry_id": "4347891d-4adf-48ef-b273-248ecf221ca6#5"
+    }
+  ],
+  "analysis": [
+    {
+      "type": "report",
+      "vendor": "SALT-NLP/SWE-chat",
+      "schema": "trajectory-metadata",
+      "session": [
+        0
+      ],
+      "mediatype": "application/json",
+      "encoding": "json",
+      "body": {
+        "harness": "gemini_cli",
+        "caveat": "SWE-chat normalized turn rows; no tool results",
+        "source": "SALT-NLP/SWE-chat",
+        "id": "4347891d-4adf-48ef-b273-248ecf221ca6"
+      }
+    }
+  ]
+}

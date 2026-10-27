@@ -1,0 +1,59 @@
+$$event-type-ext //= (event_tool_call_type,)
+$$event-type-ext //= (event_tool_result_type,)
+$$event-type-ext //= (event_reasoning_type,)
+$$event-type-ext //= (event_system_event_type,)
+
+; "tool-call" type Event Object
+event_tool_call_type = (
+    type: "tool-call",
+    event_common_type,
+    ; e.g., "Bash", "Edit", "Read"
+    tool_name: tstr,
+    ; tool arguments
+    input: any,
+    ; links call and result
+    ? call_id: tstr,
+    agent_entry_reference_type,
+    * $$tool-call-event-ext
+  )
+
+; "tool-result" type Event Object
+event_tool_result_type = (
+    type: "tool-result",
+    event_common_type,
+    ; tool output
+    output: any,
+    ; links call and result
+    ? call_id: tstr,
+    ; "success" / "error" / "completed"
+    ? status: tstr,
+    ? is_error: bool,
+    agent_entry_reference_type,
+    * $$tool-result-event-ext
+  )
+
+; "reasoning" type Event Object
+event_reasoning_type = (
+    type: "reasoning",
+    event_common_type,
+    ; plaintext reasoning or structured content
+    content: any,
+    ; provider protected content
+    ? encrypted: tstr,
+    ; topic label
+    ? subject: tstr,
+    agent_entry_reference_type,
+    * $$reasoning-event-ext
+  )
+
+; "system-event" type Event Object
+event_system_event_type = (
+    type: "system-event",
+    event_common_type,
+    ; event classifier
+    event_type: tstr,
+    ; event specific payload
+    ? data: { * tstr => any },
+    agent_entry_reference_type,
+    * $$system-event-ext
+  )

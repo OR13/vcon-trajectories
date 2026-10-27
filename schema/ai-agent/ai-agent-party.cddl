@@ -1,0 +1,15 @@
+$$party-ext //= ( agent_meta: agent_meta_type )
+
+; Agent_Meta Object
+agent_meta_type = {
+    ; e.g., "claude-opus-4-5-20251101"
+    model_id: tstr,
+    ; e.g., "anthropic", "google"
+    model_provider: tstr,
+    ; all models (multi-model sessions)
+    ? models: [* tstr],
+    ; e.g., "claude-code", "gemini-cli"
+    ? cli_name: tstr,
+    ? cli_version: tstr,
+    * tstr => any
+  }

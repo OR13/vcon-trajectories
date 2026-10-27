@@ -1,0 +1,19 @@
+vcs_context_type = {
+    ; "git" / "jj" / "hg" / "svn"
+    type: tstr,
+    ; commit SHA or change ID
+    ? revision: tstr,
+    ? branch: tstr,
+    ; repository URL
+    ? repository: tstr,
+    * tstr => any
+  }
+
+; Reference to an entry of the native agent trace
+agent_entry_reference_type = (
+    ? entry_id: agent_entry_id_type,
+    ? parent_id: agent_entry_id_type
+  )
+
+; Per-entry unique reference within a session
+agent_entry_id_type = tstr

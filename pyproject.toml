@@ -1,23 +1,17 @@
 [project]
 name = "vcon-trajectories"
-version = "0.1.0"
-description = "Represent 'mythos' agent trajectories from Hugging Face as IETF vCons (draft-ietf-vcon-vcon-core, v0.4.0) and validate them against the vCon JSON Schema."
+version = "0.2.0"
+description = "Map vendor-native agent trajectories (Claude Code, Codex CLI, Gemini CLI) onto the IETF vCon ai_agent extension (draft-birkholz-vcon-ai-agent-extension) and validate against its CDDL."
 readme = "README.md"
 requires-python = ">=3.9"
-dependencies = [
-    "jsonschema>=4.20",
-    "rfc3339-validator>=0.1.4",
-    "huggingface_hub>=0.30",
-]
+dependencies = []   # converter + parsers are stdlib-only
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
 
 [project.optional-dependencies]
-# python-vcon is the IETF reference implementation. It only speaks vCon 0.0.2
-# and pulls heavy audio deps, so it is optional and used only as a secondary
-# cross-check. Requires Python <3.13 to build.
-reference = ["python_vcon"]
-
-[project.scripts]
-vcon-trajectories = "vcon_trajectories.__main__:main"
+# corpus fetching (scripts/build.py) reads SWE-chat parquet
+corpora = ["pyarrow>=15"]
 
 [build-system]
 requires = ["hatchling"]
