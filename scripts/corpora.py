@@ -108,3 +108,18 @@ def swechat_gemini(n: int):
     ids = sorted(i for i, rs in by.items() if any(x["turn_type"] == "tool_use" for x in rs) and len(rs) <= 60)
     for i in ids[:n]:
         yield i, by[i]
+
+
+# --- Harbor ATIF: AlienKevin/marin-8b-tb2-eval-traces (Apache-2.0) ----------------
+def tb2_atif(n: int = 0):
+    """(trial_name, ATIF-v1.6 dict) from Terminal-Bench 2.0 runs of the `terminus-2` agent (both splits)."""
+    import io
+    import pyarrow.parquet as pq
+    k = 0
+    for split in ("marin_8b_base", "marin_8b_sft_step5720"):
+        b = get(f"{HF}/datasets/AlienKevin/marin-8b-tb2-eval-traces/resolve/main/{split}/data.parquet")
+        for r in pq.read_table(io.BytesIO(b), columns=["trial_name", "atif"]).to_pylist():
+            yield f"{split}/{r['trial_name']}", json.loads(r["atif"])
+            k += 1
+            if n and k >= n:
+                return

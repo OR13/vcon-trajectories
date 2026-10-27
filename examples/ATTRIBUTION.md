@@ -14,6 +14,7 @@ and `google/` examples are **third-party captures of each vendor's own harness**
 | `anthropic/claude-code-swe-chat` | Claude Code JSONL | [SALT-NLP/SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat) (via ungated mirror `cfahlgren1/SWE-chat`) | ODC-By |
 | `openai/codex-cli-swe-chat` | Codex CLI rollout JSONL | SALT-NLP/SWE-chat | ODC-By |
 | `google/gemini-cli-swe-chat` | Gemini CLI, SWE-chat *normalized turn rows* (no tool results) | SALT-NLP/SWE-chat | ODC-By |
+| `other/terminal-bench-2-atif` | Harbor ATIF-v1.6 (`terminus-2` agent, Marin-8B model) | [AlienKevin/marin-8b-tb2-eval-traces](https://huggingface.co/datasets/AlienKevin/marin-8b-tb2-eval-traces) | Apache-2.0 |
 | `other/tau-bench` | OpenAI chat-completions | [sierra-research/tau-bench](https://github.com/sierra-research/tau-bench) | MIT |
 | `other/swe-rebench-openhands` | OpenHands | [nebius/SWE-rebench-openhands-trajectories](https://huggingface.co/datasets/nebius/SWE-rebench-openhands-trajectories) | CC-BY-4.0 |
 | `other/hermes-function-calling` | Hermes `<tool_call>` | [NousResearch/hermes-function-calling-v1](https://huggingface.co/datasets/NousResearch/hermes-function-calling-v1) | Apache-2.0 |

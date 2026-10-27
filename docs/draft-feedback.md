@@ -62,6 +62,35 @@ validate it. This is the best next experiment.
 - Tool definitions are not in any native session log (only in some dataset wrappers); this repo carries them as `attachments[]` where available — the draft is silent.
 - Agent handoff between peer agents (Who&When/Magentic-One) has no construct; this repo's adapter emits a vendor `agent-handoff` system-event. Not validated here beyond the adapter.
 
+## 8. Findings from mapping to ATIF and OpenTelemetry GenAI
+
+Round-tripping through the two most visible trajectory formats (see [`formats.md`](formats.md)) turned up
+points the vendor-native logs alone did not:
+
+- **`token_usage.input` has no stated semantics.** Claude's API reports `input_tokens` *excluding* cache reads
+  and writes; OpenAI/Codex, ATIF (`prompt_tokens`) and OTel (`gen_ai.usage.input_tokens`) define input as
+  *including* cached tokens. The draft says only that `cached` is "input tokens served from cache". Un-normalized,
+  the same field means different things per vendor (Claude `input: 3, cached: 26743` vs Codex `input: 27000,
+  cached: 26743`). This repo now normalizes to the inclusive convention; the draft should state it.
+- **No field for cache-write tokens.** Anthropic bills `cache_creation_input_tokens` separately and OTel has
+  `gen_ai.usage.cache_write.input_tokens`; `token_usage` has no member for it (this repo uses the open `* tstr => any`
+  to carry `cache_write`). Suggest naming it.
+- **ATIF and OTel have a place for per-call usage next to the call; the vCon does not** (see §1). Both folded
+  usage into the agent step / `chat` span; the vCon needed a `token-count` event workaround for ~20% of events.
+- **Subagent linkage.** ATIF puts the reference *on the tool result that returned the sub-agent's output*
+  (`subagent_trajectory_ref`); OTel parents the child `invoke_agent` span under the spawning `execute_tool` span.
+  Both tie the child to a specific call. `Session_Reference` cannot (see §2), so the exporters match children to
+  `Task`/`Agent` calls by order, which is a heuristic.
+- **Out-of-band child trajectories.** Harbor's `terminus-2` records context summarization as three sub-trajectories
+  stored in *separate files* (`trajectory_path`), not embedded. A vCon `Session_Reference` has no way to point at a
+  session that is not in the same vCon; this repo keeps the refs as a `subagent-delegation` system-event.
+- **No tool-error flag in ATIF, `is_error`/`status` in the vCon.** The vCon is richer here; OTel has `error.type`
+  and span status. Worth keeping.
+- **Ordering again (§3).** Producing steps/spans required inventing a total order across `dialog[]` and `events[]`:
+  (time, think < say < act < observe, array position). Any consumer has to do the same.
+- **`reasoning` with no content and no `encrypted`** (signature-only Claude blocks) is representable but carries
+  nothing; ATIF has no field for it either, so it survives export only as an empty block in `extra`.
+
 ## What worked well
 Event typing (`tool-call`/`tool-result`/`reasoning`), `call_id` pairing, `entry_id`/`parent_id`
 for Claude's tree, `reasoning.encrypted` + empty `content` for Codex, `agent_meta`

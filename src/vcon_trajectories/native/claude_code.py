@@ -25,8 +25,13 @@ SOURCE_DEFAULT = "claude_code"
 def _usage(u: Optional[Dict[str, Any]]) -> Optional[Dict[str, Any]]:
     if not u:
         return None
-    return {"input": u.get("input_tokens"), "output": u.get("output_tokens"),
-            "cached": u.get("cache_read_input_tokens")}
+    # Anthropic reports `input_tokens` EXCLUDING cache reads/writes. OpenAI/Codex, ATIF and OTel
+    # GenAI all define input as INCLUDING cached tokens, so normalize to the inclusive convention.
+    read, write = u.get("cache_read_input_tokens") or 0, u.get("cache_creation_input_tokens") or 0
+    inp = u.get("input_tokens")
+    return {"input": (inp or 0) + read + write if inp is not None else None,
+            "output": u.get("output_tokens"), "cached": u.get("cache_read_input_tokens"),
+            "cache_write": u.get("cache_creation_input_tokens")}
 
 
 def _result_text(content: Any) -> Any:

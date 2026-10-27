@@ -44,7 +44,7 @@ def test_claude_code_mapping():
     assert types.count("tool-call") == 2 and "reasoning" in types
     # usage counted once, on a token-count event (no text message in that turn)
     tc = [e for e in v["events"] if e.get("event_type") == "token-count"]
-    assert len(tc) == 1 and tc[0]["data"]["input"] == 5
+    assert len(tc) == 1 and tc[0]["data"]["input"] == 8  # 5 + 3 cache reads: input is normalized to include cached
     # skipped attachment record is bridged: a1's parent is u1, not the attachment
     a1 = next(e for e in v["events"] if e.get("entry_id") == "a1")
     assert a1["parent_id"] == "u1"

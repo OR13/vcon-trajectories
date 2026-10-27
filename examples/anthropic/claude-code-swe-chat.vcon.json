@@ -77,9 +77,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 6,
+        "input": 41211,
         "output": 8,
         "cached": 0,
+        "cache_write": 41205,
         "model": "claude-opus-4-6"
       },
       "entry_id": "a96e9f52-fb0e-4a49-ab18-0b77258affb6",
@@ -128,9 +129,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 42065,
         "output": 44,
         "cached": 41205,
+        "cache_write": 859,
         "model": "claude-opus-4-6"
       },
       "entry_id": "36f6b731-2e2c-4f0b-884f-6daa834575ee",
@@ -164,9 +166,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 6,
+        "input": 42761,
         "output": 0,
         "cached": 42064,
+        "cache_write": 691,
         "model": "claude-opus-4-6"
       },
       "entry_id": "4861536e-29d7-46d1-8f9c-436d9360c1d4",
@@ -240,9 +243,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 43338,
         "output": 45,
         "cached": 42755,
+        "cache_write": 582,
         "model": "claude-opus-4-6"
       },
       "entry_id": "908522b6-fe1b-4b43-bce1-515c4f97f37a",
@@ -307,9 +311,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 43831,
         "output": 55,
         "cached": 43337,
+        "cache_write": 493,
         "model": "claude-opus-4-6"
       },
       "entry_id": "4826abb5-2242-4b92-aefe-2ddd5e949546",
@@ -373,9 +378,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 47493,
         "output": 139,
         "cached": 43830,
+        "cache_write": 3662,
         "model": "claude-opus-4-6"
       },
       "entry_id": "f61d01c4-57ee-4ae9-8ea4-b22d97804367",
@@ -413,9 +419,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 54673,
         "output": 161,
         "cached": 47492,
+        "cache_write": 7180,
         "model": "claude-opus-4-6"
       },
       "entry_id": "6986a13b-d563-443c-8a9c-5b9526aef345",
@@ -454,9 +461,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 61769,
         "output": 36,
         "cached": 54672,
+        "cache_write": 7096,
         "model": "claude-opus-4-6"
       },
       "entry_id": "5227cb54-7e46-4175-8462-b77fc083fde2",
@@ -504,9 +512,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 69100,
         "output": 49,
         "cached": 61768,
+        "cache_write": 7331,
         "model": "claude-opus-4-6"
       },
       "entry_id": "22ea6fc0-6518-4c5e-82a2-0dc653eb25df",
@@ -555,9 +564,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 86791,
         "output": 65,
         "cached": 69099,
+        "cache_write": 17691,
         "model": "claude-opus-4-6"
       },
       "entry_id": "122e094a-bd31-4fd3-85b6-fe4aa55271a1",
@@ -605,9 +615,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 88009,
         "output": 52,
         "cached": 86790,
+        "cache_write": 1218,
         "model": "claude-opus-4-6"
       },
       "entry_id": "28f3cd4c-f356-4c62-9d41-f7c5d302d6aa",
@@ -681,9 +692,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 92827,
         "output": 47,
         "cached": 88008,
+        "cache_write": 4818,
         "model": "claude-opus-4-6"
       },
       "entry_id": "1c980fd1-dc91-404c-9e47-0d86497a2a20",

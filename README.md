@@ -60,6 +60,9 @@ Attribution and licenses: [`examples/ATTRIBUTION.md`](examples/ATTRIBUTION.md).
 - What the data says about the draft: [`docs/draft-feedback.md`](docs/draft-feedback.md) (gaps,
   with evidence and suggested changes). Headlines: sub-agents are spawned in real data but
   `child` sessions can't be demonstrated; `token_usage` has no home on events; no cross-array ordering.
+- Beyond the draft: [`docs/formats.md`](docs/formats.md) / [`docs/fidelity.md`](docs/fidelity.md) — export to
+  ATIF (Harbor) and OpenTelemetry GenAI spans, ATIF import, and a round trip over 178 real Harbor
+  trajectories (all valid, no steps / tool calls / prompt tokens lost).
 - `file_attribution` is **not** exercised (the draft itself flags it as unvalidated).
 
 ## Layout
@@ -68,13 +71,14 @@ Attribution and licenses: [`examples/ATTRIBUTION.md`](examples/ATTRIBUTION.md).
 schema/ai-agent/   pinned draft CDDL, draft source, draft's examples + negative controls
 src/vcon_trajectories/
   ir.py            vendor-neutral Turn / UTrajectory
-  native/          claude_code.py · codex.py · gemini_cli.py   (vendor-native parsers)
+  native/          claude_code.py · codex.py · gemini_cli.py · atif.py   (native parsers; ATIF = Harbor)
   sources/         adapters for non-vendor corpora (benchmarks, telemetry)
   ai_agent.py      IR -> ai_agent vCon (the one place the mapping lives)
+  export/          ai_agent vCon -> ATIF (atif.py) · OTel GenAI spans (otel_genai.py) + their checkers
   validate.py      compose draft CDDL + run Ruby `cddl` gem + semantic checks
   coverage.py      which draft constructs a vCon exercises
 examples/          one real, capped, redacted vCon per corpus
-scripts/           build.py (examples + --report sweep) · validate.py · corpora.py (fetchers)
+scripts/           build.py (examples + --report sweep) · validate.py · fidelity.py · corpora.py (fetchers)
 ```
 
 ## Run
