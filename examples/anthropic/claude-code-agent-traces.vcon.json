@@ -13,6 +13,86 @@
     "type": "git",
     "branch": "HEAD"
   },
+  "file_attribution": {
+    "files": [
+      {
+        "path": "PROJECT.md",
+        "conversations": [
+          {
+            "ranges": [
+              {
+                "start_line": 1,
+                "end_line": 162,
+                "content_hash": "7be08e1021bd9e2592c032577619ea10a6cd64cd7ab444932bb58ac69a980182",
+                "content_hash_alg": "sha-256"
+              }
+            ],
+            "contributor": {
+              "type": "ai",
+              "model_id": "claude-sonnet-4-6"
+            }
+          }
+        ]
+      },
+      {
+        "path": "cfml/ast_nodes.py",
+        "conversations": [
+          {
+            "ranges": [
+              {
+                "start_line": 1,
+                "end_line": 95,
+                "content_hash": "7c7c174899a73e5cf9ff7eb289b57d80810fb271b24053b0f1ad97291ccef343",
+                "content_hash_alg": "sha-256"
+              }
+            ],
+            "contributor": {
+              "type": "ai",
+              "model_id": "claude-sonnet-4-6"
+            }
+          }
+        ]
+      },
+      {
+        "path": "cfml/lexer.py",
+        "conversations": [
+          {
+            "ranges": [
+              {
+                "start_line": 1,
+                "end_line": 201,
+                "content_hash": "673741a68d595b46fa0bc5e36daa46023cfd4ef1ecef3e17a0e509585f022dcc",
+                "content_hash_alg": "sha-256"
+              }
+            ],
+            "contributor": {
+              "type": "ai",
+              "model_id": "claude-sonnet-4-6"
+            }
+          }
+        ]
+      },
+      {
+        "path": "cfml/parser.py",
+        "conversations": [
+          {
+            "ranges": [
+              {
+                "start_line": 1,
+                "end_line": 310,
+                "content_hash": "67e5e94e725cbf6087324b2ac08945dd10e764f5a35e0251c3b6a1125bba31e6",
+                "content_hash_alg": "sha-256"
+              }
+            ],
+            "contributor": {
+              "type": "ai",
+              "model_id": "claude-sonnet-4-6"
+            }
+          }
+        ]
+      }
+    ]
+  },
   "sessions": [
     {
       "start": "2026-06-12T00:40:34.865Z",
@@ -1011,9 +1091,13 @@
           "ai-title": 41
         },
         "parent_id_relinked": 32,
-        "example_note": "sample slice: first 60 of 564 turns; long strings truncated",
+        "example_note": "sample slice: first 60 of 566 turns; long strings truncated",
         "source": "trace-commons/agent-traces",
-        "id": "07b57159-218e-4330-a64e-0ec4b4355056"
+        "id": "07b57159-218e-4330-a64e-0ec4b4355056",
+        "file_attribution_file_edits_replayed": 8,
+        "file_attribution_files_outside_working_dir": 2,
+        "file_attribution_attributed_files": 4,
+        "file_attribution_attributed_lines": 768
       }
     }
   ]

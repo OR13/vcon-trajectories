@@ -26,6 +26,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, List, Optional
 
+from .attribution import file_attribution
 from .ir import (ACTION, HANDOFF, INCOMPLETE, MAIN, MESSAGE, OBSERVATION,
                  REASONING, SYSTEM, TOOL_CALL, TOOL_RESULT, Turn, UTrajectory)
 
@@ -219,6 +220,9 @@ def utrajectory_to_vcon(ut: UTrajectory) -> Dict[str, Any]:
     }
     if ut.vcs:
         vcon["vcs"] = dict(ut.vcs)
+    fa, fa_stats = file_attribution(ut) if ut.file_edits else (None, {})
+    if fa:
+        vcon["file_attribution"] = fa
     vcon.update({"sessions": sessions, "parties": parties})
     if events:
         vcon["events"] = events
@@ -237,7 +241,8 @@ def utrajectory_to_vcon(ut: UTrajectory) -> Dict[str, Any]:
         vcon["attachments"] = attachments
 
     report = {k: v for k, v in {**ut.metadata, **ut.outcome, "source": ut.source, "id": ut.id,
-                                "timestamps_synthesized": synthesized or None}.items()
+                                "timestamps_synthesized": synthesized or None,
+                                **({f"file_attribution_{k}": v for k, v in fa_stats.items()} if fa_stats else {})}.items()
               if v is not None}
     vcon["analysis"] = [{"type": "report", "vendor": ut.source, "schema": "trajectory-metadata",
                          "session": list(range(len(sessions))), "mediatype": "application/json",

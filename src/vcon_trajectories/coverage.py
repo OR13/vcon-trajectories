@@ -23,6 +23,8 @@ FEATURES = [
     ("session.agent_session_id", "Session.agent_session_id"),
     ("session.child", "child Session (sub-agent)"),
     ("vcon.vcs", "vcs"),
+    ("vcon.file_attribution", "file_attribution"),
+    ("file_attribution.multi_model", "file_attribution per-range contributor (mixed models)"),
     ("attachment.tools", "tool definitions (attachment)"),
     ("time.synthesized", "timestamps synthesized (NOT native)"),
 ]
@@ -72,6 +74,11 @@ def features(v: Dict[str, Any]) -> Set[str]:
             f.add("session.child")
     if "vcs" in v:
         f.add("vcon.vcs")
+    fa = v.get("file_attribution")
+    if fa:
+        f.add("vcon.file_attribution")
+        if any("contributor" in r for fl in fa["files"] for c in fl["conversations"] for r in c["ranges"]):
+            f.add("file_attribution.multi_model")
     if any(a.get("purpose") == "tool-definitions" for a in v.get("attachments", [])):
         f.add("attachment.tools")
     for a in v.get("analysis", []):

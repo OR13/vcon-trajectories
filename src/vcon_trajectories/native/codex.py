@@ -16,7 +16,9 @@ import json
 from collections import Counter
 from typing import Any, Dict, Iterable, List, Optional
 
-from ..ir import MESSAGE, REASONING, SYSTEM, TOOL_CALL, TOOL_RESULT, Turn, UTrajectory
+import re
+
+from ..ir import MESSAGE, REASONING, SYSTEM, TOOL_CALL, TOOL_RESULT, FileEdit, Hunk, Turn, UTrajectory
 
 SOURCE_DEFAULT = "codex"
 _INJECTED = ("<environment_context>", "# AGENTS.md", "<user_instructions>", "<permissions instructions>")
@@ -37,6 +39,20 @@ def _maybe_json(s: Any) -> Any:
     return s
 
 
+_HUNK = re.compile(r"^@@ -(\d+)(?:,(\d+))? \+(\d+)(?:,(\d+))? @@")
+
+
+def _unified(diff: str) -> List[Hunk]:
+    hunks: List[Hunk] = []
+    for line in diff.split("\n"):
+        m = _HUNK.match(line)
+        if m:
+            hunks.append(Hunk(int(m[1]), int(m[2] or 1), int(m[3]), int(m[4] or 1), []))
+        elif hunks and line[:1] in (" ", "-", "+"):
+            hunks[-1].lines.append(line)
+    return hunks
+
+
 def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
           id: Optional[str] = None) -> UTrajectory:
     recs = list(records)
@@ -47,6 +63,8 @@ def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
             exits[p.get("call_id")] = p
 
     turns: List[Turn] = []
+    edits: List[FileEdit] = []
+    call_turn: Dict[str, int] = {}
     skipped: Counter = Counter()
     meta: Dict[str, Any] = {}
     model = None
@@ -77,6 +95,7 @@ def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
                                   timestamp=ts))
             elif pt in ("function_call", "custom_tool_call", "local_shell_call"):
                 args = p.get("arguments") if pt == "function_call" else (p.get("input") or p.get("action"))
+                call_turn[p.get("call_id") or p.get("id")] = len(turns)
                 turns.append(Turn(TOOL_CALL, "assistant", tool_name=p.get("name") or pt,
                                   tool_input=_maybe_json(args), call_id=p.get("call_id") or p.get("id"),
                                   timestamp=ts))
@@ -98,6 +117,15 @@ def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
                     "input": last.get("input_tokens"), "cached": last.get("cached_input_tokens"),
                     "output": last.get("output_tokens"), "reasoning": last.get("reasoning_output_tokens"),
                     "total": last.get("total_tokens")}))
+            elif et == "patch_apply_end" and p.get("success") and p.get("call_id") in call_turn:
+                for path, ch in (p.get("changes") or {}).items():
+                    k, ti = ch.get("type"), call_turn[p["call_id"]]
+                    if k == "update" and ch.get("unified_diff"):
+                        edits.append(FileEdit(path, "update", ti, model, hunks=_unified(ch["unified_diff"]), call_id=p["call_id"]))
+                    elif k == "add" and isinstance(ch.get("content"), str):
+                        edits.append(FileEdit(path, "create", ti, model, content=ch["content"], call_id=p["call_id"]))
+                    elif k == "delete":
+                        edits.append(FileEdit(path, "delete", ti, model, call_id=p["call_id"]))
             elif et in ("task_started", "task_complete", "turn_aborted"):
                 turns.append(Turn(SYSTEM, "assistant", timestamp=ts, event_type=et.replace("_", "-"),
                                   data={k: v for k, v in p.items() if k != "type" and k != "last_agent_message"} or None))
@@ -119,7 +147,7 @@ def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
         environment={"working_dir": meta["cwd"]} if meta.get("cwd") else None,
         vcs=({"type": "git", **{k: v for k, v in {"revision": git.get("commit_hash"), "branch": git.get("branch"),
                                                    "repository": git.get("repository_url")}.items() if v}} if git else None),
-        agent_session_id=sid, format="interactive",
+        agent_session_id=sid, format="interactive", file_edits=edits,
         metadata={"harness": "codex", "originator": meta.get("originator"),
                   "native_records_not_mapped": dict(skipped) or None},
     )

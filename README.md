@@ -58,12 +58,15 @@ Attribution and licenses: [`examples/ATTRIBUTION.md`](examples/ATTRIBUTION.md).
 - Full sweep: [`docs/corpus-report.md`](docs/corpus-report.md) — validity, which draft constructs
   real data exercises, native records that have no mapping.
 - What the data says about the draft: [`docs/draft-feedback.md`](docs/draft-feedback.md) (gaps,
-  with evidence and suggested changes). Headlines: sub-agents are spawned in real data but
-  `child` sessions can't be demonstrated; `token_usage` has no home on events; no cross-array ordering.
+  with evidence and suggested changes). Headlines: `token_usage` has no home on events and its `input` semantics differ by vendor;
+  no cross-array ordering; `Session_Reference` can't name the spawning call; `file_attribution` needs a pinned hash canonicalization.
 - Beyond the draft: [`docs/formats.md`](docs/formats.md) / [`docs/fidelity.md`](docs/fidelity.md) — export to
   ATIF (Harbor) and OpenTelemetry GenAI spans, ATIF import, and a round trip over 178 real Harbor
   trajectories (all valid, no steps / tool calls / prompt tokens lost).
-- `file_attribution` is **not** exercised (the draft itself flags it as unvalidated).
+- `file_attribution` is now derived from real edit diffs and checked against SWE-chat's labels
+  ([`docs/attribution-check.md`](docs/attribution-check.md)); real sub-agent results produce child Sessions
+  (`examples/anthropic/claude-code-subagent.vcon.json`). Findings: `docs/draft-feedback.md` §9. Not yet
+  exercised by real data: per-range contributors across models, and a child Session with its own transcript.
 
 ## Layout
 
@@ -76,9 +79,10 @@ src/vcon_trajectories/
   ai_agent.py      IR -> ai_agent vCon (the one place the mapping lives)
   export/          ai_agent vCon -> ATIF (atif.py) · OTel GenAI spans (otel_genai.py) + their checkers
   validate.py      compose draft CDDL + run Ruby `cddl` gem + semantic checks
+  attribution.py   replay recorded file edits -> the draft's file_attribution
   coverage.py      which draft constructs a vCon exercises
 examples/          one real, capped, redacted vCon per corpus
-scripts/           build.py (examples + --report sweep) · validate.py · fidelity.py · corpora.py (fetchers)
+scripts/           build.py (examples + --report sweep) · validate.py · fidelity.py · attribution_check.py · corpora.py (fetchers)
 ```
 
 ## Run

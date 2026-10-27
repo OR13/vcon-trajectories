@@ -17,7 +17,7 @@ from collections import Counter
 from typing import Any, Dict, Iterable, List, Optional
 
 from ..ir import (MAIN, MESSAGE, REASONING, SYSTEM, TOOL_CALL, TOOL_RESULT,
-                  ChildSession, Turn, UTrajectory)
+                  ChildSession, FileEdit, Hunk, Turn, UTrajectory)
 
 SOURCE_DEFAULT = "claude_code"
 
@@ -42,6 +42,62 @@ def _result_text(content: Any) -> Any:
     return content
 
 
+def _hunks(patch: Any) -> List[Hunk]:
+    out = []
+    for h in patch or []:
+        if isinstance(h, dict) and isinstance(h.get("lines"), list):
+            out.append(Hunk(h.get("oldStart", 1), h.get("oldLines", 0), h.get("newStart", 1), h.get("newLines", 0),
+                            [str(x) for x in h["lines"]]))
+    return out
+
+
+def _file_edit(tur: Dict[str, Any], call_id: Optional[str], model: Optional[str], turn_index: Optional[int],
+               edits: List[FileEdit]) -> None:
+    """Edit/Write results carry `filePath` plus either `structuredPatch` hunks or (create) the whole `content`."""
+    path = tur.get("filePath")
+    if not isinstance(path, str) or turn_index is None:
+        return
+    hunks = _hunks(tur.get("structuredPatch"))
+    if hunks:
+        edits.append(FileEdit(path, "update", turn_index, model, hunks=hunks, call_id=call_id))
+    elif tur.get("type") == "create" and isinstance(tur.get("content"), str):
+        edits.append(FileEdit(path, "create", turn_index, model, content=tur["content"], call_id=call_id))
+
+
+def _subagent(tur: Dict[str, Any], call_id: Optional[str], ts: Optional[str], parent: str,
+              child: Dict[str, ChildSession], turns: List[Turn]) -> None:
+    """A `Task`/`Agent` result summarizes the sub-agent run (id, type, prompt, duration, usage, tool stats).
+    The sub-agent's own transcript is not in the parent log, so the child Session holds only that summary:
+    a derived start (end minus durationMs) and an end event carrying the recorded numbers."""
+    aid = tur.get("agentId")
+    if not aid:
+        return
+    key = f"subagent:{aid}"
+    atype = tur.get("agentType") or "subagent"
+    prompt = tur.get("prompt") if isinstance(tur.get("prompt"), str) else ""
+    child[key] = ChildSession(parent=parent, agent_session_id=aid,
+                              description=f"{atype} (call {call_id}): {prompt[:100]}".strip())
+    dur = tur.get("totalDurationMs")
+    summary = {k: tur[k] for k in ("status", "totalDurationMs", "totalTokens", "totalToolUseCount", "toolStats", "usage")
+               if k in tur}
+    start = _shift(ts, -dur / 1000.0) if isinstance(dur, (int, float)) and ts else None
+    if start:
+        turns.append(Turn(SYSTEM, atype, session=key, timestamp=start, event_type="subagent-start",
+                          data={"call_id": call_id, "agent_type": atype, "prompt": prompt, "start_derived": True}))
+    turns.append(Turn(SYSTEM, atype, session=key, timestamp=ts, event_type="subagent-end",
+                      data={"call_id": call_id, **summary, "transcript_available": False}))
+
+
+def _shift(ts: str, seconds: float) -> Optional[str]:
+    from datetime import datetime, timedelta, timezone
+    try:
+        d = datetime.fromisoformat(ts.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    d = d if d.tzinfo else d.replace(tzinfo=timezone.utc)
+    return (d + timedelta(seconds=seconds)).astimezone(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
 def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
           id: Optional[str] = None) -> UTrajectory:
     records = list(records)
@@ -62,6 +118,9 @@ def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
     models: List[str] = []
     skipped: Counter = Counter()
     child: Dict[str, ChildSession] = {}
+    edits: List[FileEdit] = []
+    call_model: Dict[str, Optional[str]] = {}   # tool_use id -> model of the assistant message that issued it
+    call_turn: Dict[str, int] = {}              # tool_use id -> index of its tool-call turn
     sid = cwd = branch = version = None
 
     for r in records:
@@ -92,6 +151,11 @@ def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
                     turns.append(Turn(TOOL_RESULT, "assistant", tool_result=_result_text(b.get("content")),
                                       call_id=b.get("tool_use_id"), is_error=bool(err) if err is not None else None,
                                       status=("error" if err else "success"), **common))
+                    tur = r.get("toolUseResult")
+                    cid = b.get("tool_use_id")
+                    if isinstance(tur, dict) and not err:
+                        _file_edit(tur, cid, call_model.get(cid), call_turn.get(cid), edits)
+                        _subagent(tur, cid, r.get("timestamp"), session, child, turns)
                 else:
                     skipped[f"user.{bt}"] += 1
         elif typ == "assistant":
@@ -126,6 +190,7 @@ def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
                                       usage=usage, **common))
                     usage = None
                 elif bt == "tool_use":
+                    call_model[b.get("id")], call_turn[b.get("id")] = model, len(turns)
                     turns.append(Turn(TOOL_CALL, "assistant", tool_name=b.get("name"),
                                       tool_input=b.get("input"), call_id=b.get("id"), **common))
                 else:
@@ -147,7 +212,7 @@ def parse(records: Iterable[Dict[str, Any]], source: str = SOURCE_DEFAULT,
                     "cli_name": "claude-code", "cli_version": version} if models else None,
         environment={"working_dir": cwd} if cwd else None,
         vcs={"type": "git", "branch": branch} if branch else None,
-        agent_session_id=sid, format="interactive", child_sessions=child, metadata=meta,
+        agent_session_id=sid, format="interactive", child_sessions=child, file_edits=edits, metadata=meta,
     )
 
 

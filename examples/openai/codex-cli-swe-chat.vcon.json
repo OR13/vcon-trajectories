@@ -755,7 +755,6 @@
           "event_msg.view_image_tool_call": 6,
           "event_msg.exec_command_end(dup/empty)": 166,
           "event_msg.collab_agent_spawn_end": 6,
-          "event_msg.patch_apply_end": 45,
           "event_msg.thread_rolled_back": 2,
           "event_msg.collab_waiting_end": 4,
           "event_msg.collab_close_end": 3

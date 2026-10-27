@@ -49,6 +49,9 @@ def cap(ut, n):
     if len(ut.turns) > n:
         ut.metadata["example_note"] = f"sample slice: first {n} of {len(ut.turns)} turns; long strings truncated"
         ut.turns = ut.turns[:n]
+        ut.file_edits = [e for e in ut.file_edits if e.turn_index < n]
+        live = {t.session for t in ut.turns}
+        ut.child_sessions = {k: c for k, c in ut.child_sessions.items() if k in live}
     return ut
 
 
@@ -68,6 +71,10 @@ def examples(v):
     out = []
     n, recs = next(C.agent_traces_claude(1))
     out.append(("anthropic", "claude-code-agent-traces", claude_code.parse(recs, source="trace-commons/agent-traces"), 60))
+    # a session whose Task tool call returned a real sub-agent summary (child Session)
+    for sid, recs in C.agent_traces_claude(40):
+        if sid == "89cf9e13-a4bd-4cf9-9486-7c89737bec1b":
+            out.append(("anthropic", "claude-code-subagent", claude_code.parse(recs, source="trace-commons/agent-traces"), 60))
     for sid, recs in C.swechat_native("Claude Code", 1, max_turns=40):
         out.append(("anthropic", "claude-code-swe-chat", claude_code.parse(recs, source="SALT-NLP/SWE-chat"), 60))
     for sid, recs in C.swechat_native("Codex", 1, max_turns=8):

@@ -91,6 +91,43 @@ points the vendor-native logs alone did not:
 - **`reasoning` with no content and no `encrypted`** (signature-only Claude blocks) is representable but carries
   nothing; ATIF has no field for it either, so it survives export only as an empty block in `extra`.
 
+## 9. `file_attribution` and child sessions, exercised on real data
+
+`file_attribution` is derived (`src/vcon_trajectories/attribution.py`) by replaying the line-numbered diffs
+harnesses record: Claude Code `Edit`/`Write` results (`structuredPatch`, `create` content) and Codex
+`patch_apply_end` unified diffs. Over 52 real sessions (27 Claude Code from agent-traces, 25 Codex from SWE-chat): 33 had replayable edits (25/27 Claude, 8/25 Codex), 763
+files and 74,575 lines attributed, 100% of vCons valid against the draft CDDL. Checked against SWE-chat's own
+labels on 80 Codex sessions (`docs/attribution-check.md`): median file recall 0.76, precision 0.36 (agents edit
+files that are never committed), line ratio 1.15 against `agent_lines`. What the data says about the draft:
+
+- **It works, with `content_hash` as the key.** Line numbers shift with every later edit, so ranges are only
+  correct if edits are replayed in order; the hash is what lets a consumer re-find them. The draft does not define
+  what is hashed. This repo hashes the range's lines joined with `\n` (CRLF normalized, no trailing newline); the
+  draft should pin a canonicalization, since Windows sessions in the corpus have CRLF files.
+- **Only `ai` ranges are derivable from a session log.** `human` / `mixed` need the commit history (SWE-chat gets
+  them from git). The ranges are therefore a lower bound on AI authorship of a file, not a partition; worth saying.
+- **Positions are "as of the last edit in the session", not as committed.** Suggest a way to say which revision the
+  line numbers refer to (a `vcs.revision` is available, but nothing ties ranges to it).
+- **No link from a File_Conversation to a Session.** In a vCon with child sessions there is no way to say which
+  session wrote a range (only an optional `url`). Suggest `session: uint`.
+- **Paths are absolute in every native log, including Windows paths (`d:\CFML\...`).** Making them repo-relative
+  needs the working directory; 54 files across 52 sessions were outside it and cannot be represented.
+- **Shell edits are invisible.** `sed -i`, redirects and formatters change files without a diff in the log; this is
+  most of the 24% of SWE-chat files we miss. Recorders that can observe the file system should say so.
+- **Per-range `contributor` (mixed models) is unexercised by real data:** no session in the sample switched models
+  mid-file. It is covered by unit tests only.
+
+Child sessions, from real data (7 sessions with a `Task` sub-agent result; example
+`examples/anthropic/claude-code-subagent.vcon.json`): the parent log holds the sub-agent's *summary* (id, type,
+prompt, duration, total tokens, tool counts) but not its transcript, so the child Session has no dialog. That is a
+legitimate, common case. Observations:
+
+- A child Session needs somewhere to put run-level facts: duration is derivable from `start`+`duration`, but
+  tokens and tool counts (`totalTokens`, `totalToolUseCount`) have no Session-level home. This repo emits
+  `subagent-start` / `subagent-end` system-events (start time derived as end minus `totalDurationMs`, flagged).
+- `Session_Reference` still cannot name the spawning call; this repo writes `(call <id>)` into `description`.
+- Whether a Session may legitimately be empty is not stated; the CDDL accepts it.
+
 ## What worked well
 Event typing (`tool-call`/`tool-result`/`reasoning`), `call_id` pairing, `entry_id`/`parent_id`
 for Claude's tree, `reasoning.encrypted` + empty `content` for Codex, `agent_meta`

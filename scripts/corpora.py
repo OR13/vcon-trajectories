@@ -59,6 +59,12 @@ def _swechat_sessions():
     return pq.read_table(path, columns=["session_id", "agent", "turn_count", "tool_call_count"]).to_pylist()
 
 
+def _swechat_sessions_full():
+    import pyarrow.parquet as pq
+    _swechat_sessions()
+    return pq.read_table(os.path.join(CACHE, "swechat_sessions.parquet")).to_pylist()
+
+
 def swechat_native(agent: str, n: int, max_turns: int = 40, min_turns: int = 2):
     rows = [r for r in _swechat_sessions() if r["agent"] == agent and r["turn_count"]
             and min_turns <= r["turn_count"] <= max_turns]
