@@ -11,6 +11,7 @@ and `google/` examples are **third-party captures of each vendor's own harness**
 | Example | Harness / format | Corpus | License |
 |---|---|---|---|
 | `anthropic/claude-code-agent-traces` | Claude Code JSONL | [trace-commons/agent-traces](https://huggingface.co/datasets/trace-commons/agent-traces) | CC-BY-4.0 |
+| `anthropic/claude-code-subagent` | Claude Code JSONL (session with a real `Task` sub-agent result → child Session) | trace-commons/agent-traces | CC-BY-4.0 |
 | `anthropic/claude-code-swe-chat` | Claude Code JSONL | [SALT-NLP/SWE-chat](https://huggingface.co/datasets/SALT-NLP/SWE-chat) (via ungated mirror `cfahlgren1/SWE-chat`) | ODC-By |
 | `openai/codex-cli-swe-chat` | Codex CLI rollout JSONL | SALT-NLP/SWE-chat | ODC-By |
 | `google/gemini-cli-swe-chat` | Gemini CLI, SWE-chat *normalized turn rows* (no tool results) | SALT-NLP/SWE-chat | ODC-By |

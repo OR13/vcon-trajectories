@@ -271,7 +271,11 @@ def to_atif(vcon: Dict[str, Any]) -> Dict[str, Any]:
     n = len(vcon.get("sessions", []))
     children: Dict[int, Dict[str, Any]] = {}
     for i in range(1, n):
-        children[i] = _trajectory(vcon, i, f"{vcon['uuid']}#session-{i}", {}, notes)
+        child = _trajectory(vcon, i, f"{vcon['uuid']}#session-{i}", {}, notes)
+        if child["steps"]:  # ATIF requires >= 1 step; a Session with no entries has nothing to embed
+            children[i] = child
+        else:
+            notes.append(f"session {i} has no dialog or events, not embedded")
     root = _trajectory(vcon, 0, f"{vcon['uuid']}", children, notes)
     if children:
         root["subagent_trajectories"] = [children[i] for i in sorted(children)]

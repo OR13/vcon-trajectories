@@ -71,6 +71,28 @@ class ChildSession:
 
 
 @dataclass
+class Hunk:
+    """One unified-diff hunk. `lines` are diff lines: ' ' context, '-' removed, '+' added (marker included)."""
+    old_start: int
+    old_lines: int
+    new_start: int
+    new_lines: int
+    lines: List[str]
+
+
+@dataclass
+class FileEdit:
+    """A file change made by the agent, in the order it happened (input to `attribution`)."""
+    path: str
+    kind: str                         # create | update | delete
+    turn_index: int                   # index into UTrajectory.turns of the tool-call it came from
+    model: Optional[str] = None
+    hunks: List[Hunk] = field(default_factory=list)   # update
+    content: Optional[str] = None                      # create: whole file
+    call_id: Optional[str] = None
+
+
+@dataclass
 class UTrajectory:
     source: str                      # corpus id (attribution + uuid namespace)
     id: str
@@ -88,5 +110,6 @@ class UTrajectory:
     # Not mapped to draft constructs; carried as an attachment so nothing is lost.
     system: Optional[str] = None
     tools: Any = None
+    file_edits: List[FileEdit] = field(default_factory=list)
     outcome: Dict[str, Any] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
