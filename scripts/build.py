@@ -19,6 +19,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import corpora as C  # noqa: E402
 from vcon_trajectories.ai_agent import utrajectory_to_vcon  # noqa: E402
 from vcon_trajectories.coverage import FEATURES, features  # noqa: E402
+from vcon_trajectories.native import atif as atif_native  # noqa: E402
 from vcon_trajectories.native import claude_code, codex, gemini_cli  # noqa: E402
 from vcon_trajectories.sources import adapters as A  # noqa: E402
 from vcon_trajectories.validate import CddlValidator, semantic_issues  # noqa: E402
@@ -73,6 +74,9 @@ def examples(v):
         out.append(("openai", "codex-cli-swe-chat", codex.parse(recs, source="SALT-NLP/SWE-chat"), 60))
     for sid, rows in C.swechat_gemini(1):
         out.append(("google", "gemini-cli-swe-chat", gemini_cli.parse(rows, source="SALT-NLP/SWE-chat"), 60))
+    # Harbor ATIF (an independent producer of the same trajectory idea)
+    for tid, a in C.tb2_atif(1):
+        out.append(("other", "terminal-bench-2-atif", atif_native.parse_trajectory(a, id=tid, source="AlienKevin/marin-8b-tb2-eval-traces"), 40))
     # benchmark / framework corpora
     tb = json.loads(C.get("https://raw.githubusercontent.com/sierra-research/tau-bench/main/historical_trajectories/gpt-4o-airline.json"))
     out.append(("other", "tau-bench", A.tau_bench(tb[0]), 40))
@@ -100,6 +104,8 @@ def sweep(v):
          lambda: ((s, codex.parse(r, source="SALT-NLP/SWE-chat")) for s, r in C.swechat_native("Codex", 25, 40))),
         ("Gemini CLI · SWE-chat (normalized rows)", "google",
          lambda: ((s, gemini_cli.parse(r)) for s, r in C.swechat_gemini(8))),
+        ("Harbor ATIF · Terminal-Bench 2.0 (terminus-2)", "harbor",
+         lambda: ((s, atif_native.parse_trajectory(a, id=s, source="AlienKevin/marin-8b-tb2-eval-traces")) for s, a in C.tb2_atif())),
     ]
     rows = []
     for name, vendor, gen in jobs:

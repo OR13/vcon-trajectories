@@ -31,7 +31,7 @@ from .ir import (ACTION, HANDOFF, INCOMPLETE, MAIN, MESSAGE, OBSERVATION,
 
 RECORDER = {"name": "vcon-trajectories", "version": "0.2.0"}
 DEFAULT_CREATED_AT = datetime(2026, 10, 26, tzinfo=timezone.utc)
-_USAGE_KEYS = ("input", "output", "cached", "reasoning", "total")
+_USAGE_KEYS = ("input", "output", "cached", "cache_write", "reasoning", "total")
 
 
 def deterministic_uuid8(key: str) -> str:
@@ -54,7 +54,7 @@ def _parse(ts: Optional[str]) -> Optional[datetime]:
 
 def _fmt(dt: datetime) -> str:
     s = dt.astimezone(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S")
-    if dt.microsecond:
+    if dt.microsecond // 1000:  # millisecond resolution; sub-ms remainders are dropped, not shown as ".000"
         s += f".{dt.microsecond // 1000:03d}"
     return s + "Z"
 

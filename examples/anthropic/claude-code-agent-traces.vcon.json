@@ -95,9 +95,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 3,
+        "input": 29232,
         "output": 1993,
         "cached": 26743,
+        "cache_write": 2486,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "3d7d11f8-633c-4973-8405-8d41dc3954ea",
@@ -160,9 +161,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 32134,
         "output": 78,
         "cached": 31601,
+        "cache_write": 532,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "4d654618-334e-4d1c-82c0-d7699321880d",
@@ -200,9 +202,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 32249,
         "output": 133,
         "cached": 32133,
+        "cache_write": 115,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "e6c3f68c-c65d-443a-904b-77151b6df15b",
@@ -290,9 +293,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 32740,
         "output": 92,
         "cached": 32439,
+        "cache_write": 300,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "e7484d39-dee6-4424-a009-fbb843814b6e",
@@ -331,9 +335,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 32873,
         "output": 113,
         "cached": 32739,
+        "cache_write": 133,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "6f813648-f340-44d8-b5ec-90415072ff0e",
@@ -372,9 +377,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 33204,
         "output": 185,
         "cached": 32872,
+        "cache_write": 331,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "78682af7-f277-46c0-b8c5-a7b129592588",
@@ -413,9 +419,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 33490,
         "output": 123,
         "cached": 33203,
+        "cache_write": 286,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "cc62987c-dcae-44bc-a722-e76c48574cd3",
@@ -454,9 +461,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 33762,
         "output": 121,
         "cached": 33489,
+        "cache_write": 272,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "a71de30e-15d7-428f-90c8-f8fbc2c64754",
@@ -520,9 +528,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 34143,
         "output": 83,
         "cached": 33994,
+        "cache_write": 148,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "daa131eb-c5c8-4e54-a582-b72bdc350961",
@@ -585,9 +594,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 35155,
         "output": 221,
         "cached": 34273,
+        "cache_write": 881,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "2b48641f-a401-46ef-b163-15d5eaa91027",
@@ -650,9 +660,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 35418,
         "output": 1882,
         "cached": 35154,
+        "cache_write": 263,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "dba49f64-3f58-4da1-b9e8-1a2596f5cb1e",
@@ -690,9 +701,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 37345,
         "output": 221,
         "cached": 35417,
+        "cache_write": 1927,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "fc7f666b-8496-41b4-af6c-32ddef6889a8",
@@ -755,9 +767,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 37608,
         "output": 3509,
         "cached": 37344,
+        "cache_write": 263,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "969d2962-3322-41ea-9163-da7fc9931c8b",
@@ -795,9 +808,10 @@
       "party": 1,
       "event_type": "token-count",
       "data": {
-        "input": 1,
+        "input": 41161,
         "output": 221,
         "cached": 37607,
+        "cache_write": 3553,
         "model": "claude-sonnet-4-6"
       },
       "entry_id": "09198fe2-fbfa-407f-9f6b-d3d810c05851",
@@ -873,9 +887,10 @@
       "body": "I'll create a PROJECT.md with milestones for building CFML.",
       "model_id": "claude-sonnet-4-6",
       "token_usage": {
-        "input": 3,
+        "input": 26746,
         "output": 93,
-        "cached": 0
+        "cached": 0,
+        "cache_write": 26743
       },
       "entry_id": "a1acb021-7507-46f5-9053-b456853770e6",
       "parent_id": "15b0b741-7838-49c8-a694-1c544795ea09"
@@ -889,9 +904,10 @@
       "body": "[PROJECT.md](PROJECT.md) is written. Eight milestones, each independently shippable:\n\n1. **Lexer** — token stream from raw source\n2. **Parser & AST** — structure + causality direction\n3. **Interpreter Core** — tree-walker, variables, `@log`/`@get`/`@eq`/`@jmp`/`@conv`\n4. **Control Flow & Reverse** — `@reverse`, nested directives, strict array equality\n5. **Embedded Python** — `@extern V @embed(py, ...)`\n6. **Meme Directives** — Nyan Cat + Gordon Ramsay's handcrafted insult library\n7. **Dangerous Directives** — `@nuke` (1864 threads) + `@cryptoscam` (with honest disclosure), gated behind `--dangerous`\n8. **CLI & Polish** — `cfml run/lex/parse/check`, the example program runs verbatim\n\nSay the word and we'll start Milestone 1.",
       "model_id": "claude-sonnet-4-6",
       "token_usage": {
-        "input": 1,
+        "input": 31266,
         "output": 249,
-        "cached": 29229
+        "cached": 29229,
+        "cache_write": 2036
       },
       "entry_id": "9e476b25-8698-45eb-ba40-cc0761ae4664",
       "parent_id": "0951200a-2ab7-4ac4-a5d0-40b063a1ba39"
@@ -915,9 +931,10 @@
       "body": "Noted, saving that before we dive in.",
       "model_id": "claude-sonnet-4-6",
       "token_usage": {
-        "input": 3,
+        "input": 31604,
         "output": 470,
-        "cached": 31265
+        "cached": 31265,
+        "cache_write": 336
       },
       "entry_id": "4d1eb4d5-0cf1-466e-91e1-d87731905a33",
       "parent_id": "583e2e0b-b974-4741-855d-3a819ba26aed"
@@ -931,9 +948,10 @@
       "body": "Good. Now let's build. Starting all three milestones — Lexer, Parser/AST, and Interpreter Core. I'll create the files in order.",
       "model_id": "claude-sonnet-4-6",
       "token_usage": {
-        "input": 1,
+        "input": 32440,
         "output": 265,
-        "cached": 32248
+        "cached": 32248,
+        "cache_write": 191
       },
       "entry_id": "0276571f-ca1c-4a1f-ad5f-7cf2d10d66c0",
       "parent_id": "85f545ff-7585-4d41-8830-5ae80735f3b9"
@@ -947,9 +965,10 @@
       "body": "Phantom directory — Windows sometimes does this. Let me just work around it and write all the files now.",
       "model_id": "claude-sonnet-4-6",
       "token_usage": {
-        "input": 1,
+        "input": 33995,
         "output": 103,
-        "cached": 33761
+        "cached": 33761,
+        "cache_write": 233
       },
       "entry_id": "23f3fe2d-53f7-4478-a4fb-60d1fc1ca8d6",
       "parent_id": "e11fe48a-859f-44f0-8a3e-0c99d7d6f61b"
@@ -963,9 +982,10 @@
       "body": "Now the AST nodes:",
       "model_id": "claude-sonnet-4-6",
       "token_usage": {
-        "input": 1,
+        "input": 34274,
         "output": 660,
-        "cached": 34142
+        "cached": 34142,
+        "cache_write": 131
       },
       "entry_id": "a6e17f2e-afad-4905-a547-5b7231a77b79",
       "parent_id": "3395f965-c2e0-42fb-84fd-cb1a493a0569"
